@@ -1,0 +1,375 @@
+# Configuração do broll-bot. Todos os campos são opcionais (há defaults no código).
+seed: 42
+
+output:
+  width: 1920
+  height: 1080
+  fps: 30
+  crf: 20
+  preset: medium
+  audio_bitrate: 192k
+  encoder: auto            # auto = chip de vídeo (Intel QuickSync, NVIDIA NVENC, AMD AMF) se houver | qsv | nvenc | amf | cpu
+  format: horizontal       # horizontal (YouTube 16:9) | vertical (Shorts/Reels/TikTok 9:16: liga o perfil "vertical" abaixo)
+
+narration:                 # pausas da narração (vídeo curto não pode ter buraco); no vertical liga sozinho
+  cut_silence: false
+  max_pause: 0.35          # pausa maior que isso...
+  keep_pause: 0.12         # ...vira isso
+  threshold_db: -42
+
+captions:                  # legenda animada queimada no vídeo; no vertical liga sozinha
+  enabled: false
+  style: frase             # palavra | frase | caixa | karaoke | limpa | impacto | neon | maquina (prévias no app)
+  color: ""                # destaque (#RRGGBB); vazio = a cor do canal
+  position: 0              # altura do centro da legenda (0 = automático: 64% no vertical, 83% no deitado)
+  size: 1.0
+  uppercase: auto          # auto | sim | nao
+
+vertical:                  # perfil do vídeo em pé (output.format: vertical)
+  width: 1080
+  height: 1920
+  cut_silence: true
+  captions: true
+  caption_style: frase
+  overlays: true           # overlays acima da faixa dos botões do app (TikTok/Shorts)
+  avatar: true             # avatar da HeyGen recortado no meio para a tela em pé
+  min_clip_seconds: 0.9
+  max_clip_seconds: 2.5
+  rhythm_gap: 6            # quebra de padrão (frase, template, zoom) a cada ~6 s
+  progress_bar: true       # barrinha de progresso no topo
+  fx: true                 # motion de retenção: gancho, ênfase, círculo/lupa, congelamento, contador (README)
+  fx_density: 1.0          # 0.5 = metade dos efeitos; 1.5 = mais
+  fx_grade: true           # cor mais viva, grão e vinheta leves
+  fx_hook: true            # título do gancho nos primeiros segundos
+  ending: loop             # loop (o fim emenda no começo) | cta ("segue para mais") | both | off
+
+paths:
+  work_dir: .work          # intermediários e logs por execução
+  cache_dir: .cache        # cache de buscas, thumbnails, embeddings e mídias baixadas
+  local_library: library/mixkit
+  overlays: library/overlays   # opcional: vídeos de "film burn"/light leak (fundo preto) para a queima de filme
+  sfx: library/sfx             # opcional: seus efeitos sonoros (whoosh_1.wav, typing.mp3...) substituem os gerados
+  music: library/music         # músicas de fundo, em subpastas por clima (energetico, tensao, calmo...)
+
+transcription:
+  enabled: true
+  model: small             # tiny | base | small | medium | large-v3
+  device: auto             # auto | cpu | cuda
+  compute_type: default    # default = int8 na CPU (rápido), float16 na placa de vídeo
+  language: auto            # auto = o mesmo idioma do roteiro (ou pt, fr, pl, en, es)
+
+analysis:
+  provider: anthropic      # anthropic (Claude) | openai (ChatGPT) | heuristic (offline); ou --ai na linha de comando
+  model: claude-opus-5-5
+  subject: ""              # carro principal do vídeo ("toyota corolla"); vazio = detecta no roteiro
+  openai_model: gpt-5-mini # modelo da OpenAI: o "mini" custa uma fração do gpt-5 e dá conta do plano
+  openai_effort: medium    # raciocínio: minimal | low | medium | high (mais alto = mais tokens = mais caro)
+  openai_max_tokens: 40000 # modelos de raciocínio "pensam" antes de responder: limite folgado
+  fallback_to_heuristic: false   # se a IA falhar: false = para e mostra o motivo; true = segue sem IA
+  effort: medium           # low | medium | high
+  max_tokens: 16000
+  target_scene_seconds: 12
+  min_scene_seconds: 3
+  max_scene_seconds: 25
+  split_scene_seconds: 16   # cena maior que isso é dividida nas frases (evita repetir os mesmos clipes)
+  auto_templates: true      # detector: sequência de anos, "zero a cem", FIPE, prós/contras, notas... viram template
+  script_language: auto     # auto = detecta no roteiro: pt (Brasil), fr, pl (também en, es)
+  niche: "automotivo (carros, reviews, comparativos, preços)"
+
+director:                  # diretor de IA: lê o roteiro inteiro antes de tudo e decide o que vai na tela
+  enabled: true            # false = só as regras do bot (como era antes)
+  provider: auto           # auto = a mesma IA do plano de cenas | openai | anthropic
+  openai_model: gpt-5      # um modelo mais forte que o do plano de cenas: é ele que entende o roteiro
+  openai_effort: medium
+  model: claude-sonnet-5-5 # quando a IA é o Claude
+  effort: medium
+  max_tokens: 40000
+  niche: true              # o nicho do vídeo vem do roteiro (troca de nicho sem ajuste); false = vale o do canal
+
+search:
+  # acervos de licença livre primeiro (foto do assunto exato, menos repetição); YouTube CC só como reserva
+  provider_order: [openverse, wikimedia, archive, mixkit_local, pixabay, pexels, youtube_cc, youtube_any]
+  skip_providers: []             # bancos fora deste vídeo (o estilo Documentário tira o youtube_any)
+  strategy: compare              # compare: toda consulta vai a todos os bancos e o melhor vence | fallback: para no 1º que basta
+  max_searches_per_scene: 6      # chamadas de API por cena (cache hit não conta; +1 por shot acima de 3)
+  max_uses_per_clip: 3           # quantas vezes o mesmo clipe pode ser repetido no vídeo
+  min_reuse_gap_seconds: 45      # um clipe repetido só volta 45 s depois da última vez que apareceu
+  max_marked_uses: 3             # foto/vídeo seu marcado para a fala (say) repete no máximo 3 vezes no vídeo
+  local_counts_toward_budget: false
+  per_page: 15
+  min_score: 0.45                # abaixo disso a cena reformula a busca
+  min_semantic: 0.55             # relevância visual mínima (CLIP) para o clipe contar como bom
+  reserve_per_scene: 1
+  video_head_seconds: 24         # vídeo do Pexels/Pixabay mais longo que isso: baixa só o começo, sem som (0 = inteiro)
+  image_ratio: 0.2               # fração aproximada de shots com imagem (Ken Burns)
+  min_width: 1280
+  orientation: landscape
+  cache_ttl_hours: 24            # a Pixabay exige cache de 24h
+  max_rank_candidates: 16
+  similarity_threshold: 0.93     # evita clipes quase iguais em sequência
+  duplicate_threshold: 0.96      # mesma foto vinda de outra fonte não entra de novo no vídeo
+  opportunistic_model_providers: [pexels]   # busca com o modelo exato só vai ao Pexels se ele não tiver fila
+  max_queue_wait_minutes: 8      # depois de 8 min esperando a fila do Pexels (200/h) no vídeo, só com a fila livre
+  reserve_providers: [pexels, youtube_cc, youtube_any]   # reserva: só busca neles quando os outros bancos não bastam ([] = todos sempre)
+  circuit_breaker:
+    failure_threshold: 3
+    cooldown_seconds: 300
+
+providers:
+  pexels:
+    enabled: true
+    per_hour: 200                # limite oficial por hora: o bot gasta à vontade o que sobrou da última hora
+                                 # (conta as rodadas anteriores em .cache/ratelimit_pexels.json); 0 = usa as 2 linhas abaixo
+    requests_per_minute: 3       # só com per_hour: 0
+    burst: 40                    # só com per_hour: 0
+    min_interval_seconds: 1.0    # um pedido por segundo no máximo: rajada de 40 juntos o Pexels bloqueia com 403
+    max_wait_seconds: 20
+    max_retries: 3
+    locale: en-US
+  pixabay:
+    enabled: true
+    requests_per_minute: 90      # limite oficial: 100 a cada 60s
+    burst: 10
+    max_wait_seconds: 20
+    max_retries: 3
+    locale: en
+  mixkit_local:
+    enabled: true
+  archive:                       # Internet Archive (sem chave): busca + ficha de cada filme; trecho baixado com o FFmpeg
+    enabled: true                # quem liga de fato é archive.enabled (estilo Documentário) — abaixo
+    requests_per_minute: 120
+    burst: 8
+    max_wait_seconds: 20
+    max_retries: 2
+  openverse:                     # sem chave: limite baixo; com OPENVERSE_CLIENT_ID/SECRET no .env, bem maior
+    enabled: false               # desligado: travava a busca (41 esperas de 20 s num vídeo) e não dava imagem nenhuma
+    requests_per_minute: 20
+    burst: 4
+    max_wait_seconds: 20
+    max_retries: 2
+  youtube_cc:                    # só entra com YOUTUBE_API_KEY no .env e o yt-dlp instalado
+    enabled: true
+    requests_per_minute: 30
+    burst: 3
+    max_wait_seconds: 20
+    max_retries: 2
+    timeout_seconds: 60
+  youtube_any:                   # qualquer vídeo do YouTube (não só CC): reserva depois do YouTube CC
+    enabled: true                # vídeos com direitos reservados (Content ID pode reclamar): false desliga
+    requests_per_minute: 30
+    burst: 3
+    max_wait_seconds: 20
+    max_retries: 2
+    timeout_seconds: 60
+  wikimedia:                     # fotos do modelo exato; sem chave, só WIKIMEDIA_CONTACT no .env
+    enabled: true
+    requests_per_minute: 30
+    burst: 3
+    max_wait_seconds: 20
+    max_retries: 3
+
+archive:                         # arquivo histórico: cinejornais e filmes do governo americano (domínio público)
+  enabled: false                 # o estilo Documentário liga no vídeo; canal de história: archive: {enabled: true}
+  clip_seconds: 8                # trecho baixado de cada filme (o Internet Archive guarda um quadro a cada 30–60 s)
+  items_per_search: 3            # filmes olhados por busca
+  segments_per_item: 5           # trechos de cada filme que o ranking/revisão comparam pelo quadro
+  collections: [universal_newsreels, FedFlix, usgovfilms, prelinger]
+
+openverse:                       # fotos CC/domínio público de Flickr, museus e acervos (sem chave já funciona)
+  allow_share_alike: false
+  min_width: 1000                # a foto do Flickr que o Openverse entrega tem 1024 px
+
+youtube_cc:                      # vídeos Creative Commons do YouTube: YOUTUBE_API_KEY no .env + pip install yt-dlp
+  clip_seconds: 25               # trecho baixado do meio de cada vídeo (nunca o vídeo inteiro)
+  min_subscribers: 1000          # canal pequeno reenviando TV/filme marcado como CC é o maior risco
+  max_searches_per_video: 30     # cada busca gasta 100 das 10.000 unidades/dia da chave grátis
+  max_height: 1080
+  # "Sign in to confirm you're not a bot": o YouTube barrou o download. Faça login no YouTube no Firefox (de
+  # preferência com uma conta secundária) e ponha firefox aqui. No Windows o Chrome/Edge trancam os cookies;
+  # outra saída é exportar um cookies.txt (extensão "Get cookies.txt LOCALLY") e pôr o caminho em cookies_file
+  cookies_from_browser: ""
+  cookies_file: ""
+
+youtube_any:                     # qualquer vídeo do YouTube: mesma chave, cota e navegador logado do youtube_cc
+  clip_seconds: 8                # trecho curto do meio do vídeo (o shot usa 3–5 s dele)
+  min_subscribers: 1000
+  max_searches_per_video: 20     # divide as 10.000 unidades/dia da chave com o youtube_cc (30 buscas)
+  exclude_channels: [Voxelon]    # canais que nunca entram (concorrente que fez o mesmo vídeo, por exemplo)
+
+wikimedia:
+  allow_share_alike: false       # CC BY-SA exige licenciar o vídeo nos mesmos termos: fora por padrão
+  min_width: 1200                # fotos menores ficam de fora
+
+named_images:                    # fotos dos nomes do roteiro (bateria, loja, pessoa), baixadas antes da busca
+  enabled: true
+  per_name: 2                    # fotos por nome
+  per_name_max: 6                # nome citado a toda hora (o presidente) ganha mais fotos, até este teto
+  mentions_per_extra: 6          # +1 foto a cada tantas citações na fala
+  web: true                      # Google Imagens (SERPER_API_KEY no .env), sem licença verificada; false = só Wikimedia
+  min_side: 400
+
+ranking:
+  use_clip: true
+  clip_model: ViT-B-32
+  clip_pretrained: laion2b_s34b_b79k
+  device: auto
+  local_bonus: 0.06               # empurrão para a sua biblioteca local quando ela já é relevante
+  provider_bonus: {openverse: 0.06, wikimedia: 0.03, archive: 0.06}   # empate vai para os acervos livres (Openverse: compensa a foto de 1024 px; archive: filme de época, só no Documentário)
+  visual_checks: true            # veta prédio/paisagem, carro batido e "outro carro da lista" (CLIP)
+  off_topic_margin: 0.02          # aumente se estiver barrando imagem boa; diminua se passar prédio
+  crash_margin: 0.025
+  reference_margin: 0.03
+  weights:
+    semantic: 0.65
+    quality: 0.12
+    duration: 0.10
+    orientation: 0.08
+    text_penalty: 0.25
+    negative_penalty: 0.30
+
+timeline:
+  min_clip_seconds: 2.2
+  max_clip_seconds: 7.0          # teto absoluto por b-roll (inclui a transição)
+  snap_to_words: true            # cortes internos caem nas pausas da fala
+  snap_tolerance: 0.6            # até quanto um corte pode andar para cair numa pausa
+  hard_cut_probability_in_scene: 0.35
+  hard_cut_probability_scene_change: 0.10
+  transition_min: 0.2
+  transition_max: 0.6
+  transitions: [fade, dissolve, fadeblack, smoothleft, smoothright, smoothup, slideleft, slideright,
+                wipeleft, wiperight, circleopen, hblur, coverleft, revealright, zoomin, fadewhite]
+  # efeitos em cortes secos: whip (chicote com desfoque), punch (zoom rápido),
+  # glitch (RGB + ruído), leak (vazamento de luz), wash (lavagem de cor verde-água -> azul),
+  # burn (queima de filme) e blackout (tela preta com barrinhas + glitch)
+  effects: [whip, punch, glitch, leak, wash, burn, blackout]
+  effect_probability: 0.35
+  # peso no sorteio: wash e burn são a "assinatura" (aparecem mais)
+  effect_weights: {whip: 1.0, punch: 0.9, glitch: 0.5, leak: 0.5, wash: 1.7, burn: 1.7, blackout: 0.5}
+  pace: normal                   # normal | fast (fast = planos de 1,3–4,2 s; sobrepõe os tempos acima)
+  old_film_providers: []         # filme antigo (grão, risco, sépia) sempre no vídeo destes bancos (Documentário: [archive])
+  old_film_chance: 0             # fração das cenas em que o b-roll de vídeo comum também ganha o filme antigo (Documentário: 0.25)
+  video_layouts: {full: 0.35, zoom_crop: 0.30, push: 0.20, inset: 0.15}
+  image_layouts: {kenburns: 0.75, inset: 0.25}
+
+templates:
+  # motion graphics sugeridos pelo plano de cenas (campo "style"); a IA decide a duração
+  enabled: true
+  styles: [comparison, versus, specs, stat, gauge, blueprint, checklist, ranking, chapter,
+           mosaic, hud, card, vhs, headline, triptych, counter, chart, quote, scrapbook,
+           timeline, speedometer, datasheet, price, proscons, score, magnifier, beforeafter, news, comment, poll, showcase, gallery, sketch, dossier, statement,
+           bulletin, report, videowall,   # telejornal: só entram pelo estilo Broadcast do app
+           paperfloat, paperpair, papertimeline, papercompare, paperstatement, paperrank,   # papel: estilo Dossiê do app
+           newsrank, newsfloat, newstimeline, newscompare,   # telejornal: estilo Broadcast do app
+           percentbar, peoplegrid, receipt, downtime, warning,   # edição magnética: dados da fala
+           textmask, photostack, splitpanels, annotate, wordpop, # edição magnética: quebras de padrão
+           source, fromto, coverage, steps, unverified, exploded, # reportagem: fonte, crescimento, garantia, dicas...
+           filmstrip, opener, profile, yearflash, flow, mythfact, definition, agenda] # qualquer nicho
+  # a lista acima só acrescenta (templates novos do código entram sozinhos); para desligar algum, ponha aqui
+  styles_off: []
+  min_gap_seconds: 0       # b-roll mínimo entre dois templates (0 = podem vir colados; o anterior encurta se precisar)
+  max_share: 1.0           # fração máxima do vídeo em templates: 1.0 = sem limite (todo template que a fala pedir entra)
+  min_seconds: 2.5
+  max_seconds: 16          # templates podem passar dos 7 s dos b-rolls
+  default_seconds:         # usado quando o plano não traz template_seconds
+    {comparison: 10, versus: 10.5, specs: 9, checklist: 9, blueprint: 8, gauge: 6, stat: 5,
+     ranking: 5.5, chapter: 3.2, mosaic: 7, hud: 6.5, card: 6, vhs: 6,
+     headline: 2.2, triptych: 6.5, counter: 5, chart: 7, quote: 4.5, scrapbook: 6,
+     timeline: 10, speedometer: 5, datasheet: 9, price: 5, proscons: 8, score: 8, magnifier: 4,
+     beforeafter: 5.5, news: 5.5, comment: 6, poll: 5.5, showcase: 4.5, gallery: 5, sketch: 5, dossier: 5, statement: 2.6}
+  style_min_seconds: {headline: 1.2, chapter: 2.0, ranking: 2.0, newsrank: 2.0, paperrank: 2.0, statement: 1.2, showcase: 2.5, gallery: 3.5, sketch: 3.5, dossier: 3}   # título de destaque pode ser bem curto
+  item_search_budget: 1    # buscas de API por item do comparativo/versus
+  captions: {comparison: true, mosaic: true, hud: true, card: true, vhs: false}
+  rhythm_gap: 11          # passou isso só de b-roll: tela preta, frase em destaque, foto/galeria/desenho no blueprint, seta ou palavra (0 = desliga)
+  statement_every: 40     # intervalo mínimo entre telas pretas (o real é sorteado entre 40 s e ~90 s)
+  statement_chance: 0.5   # chance de uma frase de impacto virar tela preta: fica aleatório, não em compasso
+  phrase_chance: 0.45     # chance de uma frase de impacto virar frase de destaque (marca-texto amarelo) sobre o b-roll
+  brand_theme: channel     # padrão do canal em todos os templates (azul-escuro + amarelo com contorno); "" = temas variados
+  comparison_themes: [paper, blueprint]   # alterna fundo claro quadriculado e blueprint
+  hud_themes: [redgrid, cyangrid]
+  dark_themes: [carbon, blueprint]        # ficha técnica alterna fibra de carbono e blueprint
+
+overlays:                        # rótulo, callout, selo... desenhados por cima do b-roll
+  enabled: true
+  kinds: [label, pair, callout, tag, badge, keyword, bullets, panel, bignum, subscribe, fuel, phrase, file, impact,
+          lowerthird, ticker, crawl,   # telejornal: só entram pelo estilo Broadcast do app
+          years, paperyears, papertag] # years: ano/modelo do carro quando é falado; os paper*: estilo Dossiê do app
+  min_gap_seconds: 3             # intervalo mínimo entre dois overlays
+  min_shot_seconds: 1.6          # shot mais curto que isso não recebe overlay
+
+sfx:                             # efeitos sonoros nas transições, templates e overlays
+  enabled: true                  # ou --no-sfx na linha de comando
+  volume: 0.55                   # 0–1, relativo ao nível da narração
+  transition_volume: 0.45        # sons de transição mais baixos que os das animações
+  transition_probability: 0.35   # só ~1/3 das transições tem som (sorteio com a seed)
+  transition_min_gap: 4          # segundos mínimos entre dois sons de transição
+
+music:                           # música de fundo que segue o clima do roteiro (faixas em library/music)
+  enabled: true                  # ou --no-music; --music faixa.mp3 usa uma faixa só no vídeo todo
+  volume: 0.12                   # nível enquanto você fala, relativo à voz (0.12 ≈ -18 dB; suba para 0.16 se quiser mais)
+  pause_volume: 0.3              # nível nas pausas e antes da fala começar
+  duck_hold: 0.6                 # segundos de pausa antes de a música subir
+  min_segment_seconds: 35        # a música só troca de clima depois disso
+  max_segment_seconds: 120       # trecho mais longo troca de faixa (mesmo clima), de preferência num título
+  crossfade_seconds: 2.5
+  fade_in_seconds: 1.0
+  fade_out_seconds: 3.0
+  title_breath: true             # a música "respira" antes de título/capítulo
+
+review:                          # a IA olha as miniaturas e reprova o que não combina
+  mode: "off"                    # "off" | "api" (ou use --review na linha de comando)
+  provider: auto                 # auto = a mesma IA do plano de cenas | anthropic | openai
+  model: claude-opus-5-5
+  openai_model: gpt-5-mini       # precisa ser um modelo que enxerga imagens
+  effort: low
+  max_tokens: 8000
+  candidates_per_scene: 8        # miniaturas por grade
+  scenes_per_request: 10
+  rounds: 2                      # reprovou demais -> busca mais e revisa os novos
+
+avatar:                          # apresentador da HeyGen com a SUA narração (precisa da HEYGEN_API_KEY no .env)
+  enabled: true                  # liga quando o canal tem avatar_id (o ID fica no canais/<canal>.yaml)
+  avatar_id: ""                  # vazio aqui: cada canal escolhe o seu
+  kind: avatar                   # avatar | photo (foto falante)
+  style: normal                  # normal | closeUp | circle (enquadramento da HeyGen)
+  moments: [intro, cta, outro, checkin]  # abertura, inscrição, final e a aparição extra do começo
+  photo: ""                      # imagem do personagem (o canal escolhe a sua); a HeyGen anima com o lip-sync
+  layout: full                   # full = tela cheia, do jeito que a imagem é | corner = num canto, recortado do verde
+  engine: avatar_iv              # avatar_iv (cabeça, corpo e mãos; mais crédito) | standard (boca e cabeça)
+  motion: expressive             # só no standard: expressive | stable
+  position: right                # no canto: right | left
+  size: 0.5                      # altura do avatar (fração da altura do vídeo)
+  crop: 0.5                      # largura do recorte do meio do clipe da HeyGen
+  intro_seconds: [6, 12]         # abertura: mínimo e máximo (frases inteiras)
+  cta_seconds: 10
+  checkin_every: 60              # aparição extra perto de 1:00...
+  checkin_until: 60              # ...só ela (180 = uma por minuto até 3:00; 0 em checkin_every desliga)
+  checkin_seconds: [4, 9]        # cada uma: uma frase inteira entre 4 e 9 s (de preferência sem números)
+  outro_seconds: [4, 10]
+  max_seconds: 75                # teto por vídeo (créditos da HeyGen); refazer o vídeo usa o cache, não gasta de novo
+  wait_minutes: 20               # espera mínima; enquanto o vídeo ainda monta, continua esperando a HeyGen
+  regenerate: false              # versão 2, 3... da mesma narração usa o avatar já gerado (true = paga de novo)
+
+character:                       # fotos do personagem do canal em cena (OpenAI, a partir da imagem do avatar)
+  enabled: true                  # liga quando o canal tem a imagem do personagem e o .env tem a OPENAI_API_KEY
+  after_avatar: true             # uma logo depois de cada aparição do avatar
+  strong_max: 4                  # momentos fortes por vídeo ("o motor quebra", "a conta passa de £2.000"); 0 = desliga
+  min_gap: 75                    # distância mínima entre duas (s)
+  model: gpt-image-1
+  quality: medium                # low | medium | high
+  size: 1536x1024
+  reuse: true                    # guarda as imagens em canais/personagem/<canal>/ e reaproveita nos próximos vídeos
+  reuse_match: 0.34              # quanto a fala precisa parecer com a da imagem guardada (0-1)
+  library_max: 24                # com tantas guardadas, para de gerar e só reaproveita (custo zero)
+
+render:
+  chunk_size: 12                 # shots por bloco de renderização
+  workers: 0                     # shots em paralelo (0 = automático)
+  intermediate_crf: 15
+  intermediate_preset: veryfast
+  keep_intermediates: false
+  max_media_cache_gb: 8          # limite do cache de mídias baixadas (.cache/media); acima disso sai o mais antigo
+
+costs:                           # estimativa do gasto de IA por vídeo (app: aba Custos e tela Concluídos)
+  prices: {}                     # US$ por 1 milhão de tokens [entrada, saída] se a tabela mudar, ex.: {gpt-5-mini: [0.25, 2.0]}
+  heygen: {}
+  images: {}                     # OpenAI (US$ por imagem) se a tabela mudar, ex.: {gpt-image-1/medium: 0.063}                     # HeyGen (US$/s; criação US$/chamada) se a tabela mudar, ex.: {photo_avatar_iv: 0.0385}

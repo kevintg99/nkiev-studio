@@ -1,0 +1,19 @@
+# Canal Bernard Chevalier — francês (público França)
+# O bot usa este perfil sozinho quando o roteiro é em francês (ou com --canal "Bernard Chevalier").
+# Só o que está aqui muda; o resto vem do config.yaml.
+
+canal:
+  nome: Bernard Chevalier
+  idioma: fr
+  moeda: "€"                       # moeda dos preços quando a fala não diz qual
+  pasta_videos: videos/Bernard Chevalier
+  sem_templates: []                # templates que este canal nunca usa (ex.: [dossier, sketch])
+  sem_overlays: []                 # overlays que este canal nunca usa (ex.: [file, impact])
+  # paleta: vazia = a identidade atual (azul-marinho, blueprint azul, texto e destaques amarelos com
+  # contorno preto). Para mudar, use as mesmas chaves do canal Jhonny Walt (cores em [R, G, B]).
+  paleta: {}
+
+# Qualquer seção do config.yaml pode ser ajustada só para este canal, por exemplo:
+# templates:
+#   rhythm_gap: 11
+#   phrase_chance: 0.45

@@ -1,0 +1,9 @@
+Fontes das legendas animadas (broll_bot/captions.py), baixadas do Google Fonts:
+
+- Montserrat Black / ExtraBold — Copyright 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)
+- Anton — Copyright 2020 The Anton Project Authors (https://github.com/googlefonts/AntonFont)
+- Bangers — Copyright 2010 Vernon Adams (vern@newtypography.co.uk)
+- Poppins — Copyright 2020 The Poppins Project Authors (https://github.com/itfoundry/Poppins)
+
+Todas sob a SIL Open Font License, Version 1.1 (texto completo em OFL-Montserrat.txt nesta pasta e em
+https://openfontlicense.org). Uso livre, inclusive comercial, em vídeos; a fonte não pode ser vendida sozinha.

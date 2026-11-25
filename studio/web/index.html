@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nKiev Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0D0D0F;--side:#0A0A0B;--panel:#141417;--line:#26262B;--line2:#1C1C20;--line3:#2E2E34;--edge:#1C1C20;--foot:#0D0D0F;
+  --text:#EDEDEF;--text2:#C4C4CA;--muted:#8B8B94;--acc:#E9E3D5;--acc2:#F4EFE4;--soft:#D8CFBB;--onacc:#121212;
+  --tint:#18181B;--tint2:#1E1E22;--tintline:#5A5750;--hover:#3A3A40;--raise:#18181B;--raise2:#1E1E22;--opt:#141417;--navhover:#151517;
+  --ok:#8FD4A8;--okbg:#122019;--okline:#2B4A38;--warn:#E3C27A;--warnbg:#211B10;--warnline:#4D4024;--bad:#E59A9A;--badbg:#221314;--badline:#4F2A2C}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:14px;
+  -webkit-font-smoothing:antialiased;font-feature-settings:"cv11","ss01"}
+button,input,select,textarea{font:inherit;color:inherit}
+.h{font-family:'Inter','Segoe UI',sans-serif;letter-spacing:-.02em}
+.app{display:flex;height:100vh;overflow:hidden}
+aside.side{width:224px;flex-shrink:0;display:flex;flex-direction:column;gap:2px;padding:20px 12px;background:var(--side);border-right:1px solid var(--edge)}
+main{flex-grow:1;display:flex;flex-direction:column;min-width:0;min-height:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px}
+.lbl{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.sub{font-size:13px;color:var(--muted);line-height:1.55}
+.input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:11px 13px;font-size:14px;outline:none;transition:border-color .15s}
+.input:focus{border-color:var(--tintline)}
+.input::placeholder{color:var(--muted);opacity:.7}
+select.input{height:40px;padding:0 12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s}
+.btn:hover{border-color:var(--hover);background:var(--raise)}
+.btn.on{border-color:var(--tintline);background:var(--raise2)}
+.btn.danger{color:var(--bad);border-color:var(--badline)}
+.btn.danger:hover{background:var(--badbg)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.primary{display:inline-flex;align-items:center;gap:10px;height:38px;padding:0 18px;border-radius:8px;border:0;background:var(--acc);color:var(--onacc);font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.01em;transition:background .15s}
+.primary:hover{background:var(--acc2)}
+.primary:disabled{opacity:.45;cursor:not-allowed}
+.ghost{background:transparent;border:0;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;height:36px;padding:0 10px;border-radius:8px}
+.ghost:hover{color:var(--text);background:var(--raise)}
+.nav{display:flex;align-items:center;gap:11px;width:100%;height:36px;padding:0 12px;border-radius:7px;border:0;background:transparent;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;text-align:left;transition:color .15s,background .15s}
+.nav svg{opacity:.85}
+.nav:hover{background:var(--navhover);color:var(--text)}
+.nav.on{background:var(--raise2);color:var(--text)}
+.badge{min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--acc);color:var(--onacc);font-size:11px;font-weight:600;display:inline-flex;align-items:center;justify-content:center}
+.opt{display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:10px;border:1px solid var(--line);background:var(--opt);color:var(--text);text-align:left;cursor:pointer;min-width:0;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--hover)}
+.opt.on{border-color:var(--tintline);background:var(--tint)}
+.seg{display:inline-flex;padding:3px;border-radius:8px;background:var(--bg);border:1px solid var(--line);gap:2px;flex-wrap:wrap}
+.segb{height:30px;padding:0 12px;border-radius:6px;border:0;background:transparent;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer}
+.segb.on{background:var(--raise2);color:var(--text)}
+.segb:disabled{opacity:.4;cursor:not-allowed}
+.sw{position:relative;width:38px;height:22px;border-radius:11px;border:0;background:var(--line3);cursor:pointer;flex-shrink:0;transition:background .15s}
+.sw.on{background:var(--acc)}
+.knob{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:8px;background:var(--text);transition:left .15s}
+.sw.on .knob{left:19px;background:var(--onacc)}
+.tag{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:6px;font-size:12px;font-weight:500;background:transparent;color:var(--text2);border:1px solid var(--line);white-space:nowrap}
+.tag.acc{border-color:var(--tintline);color:var(--text)}
+.tab{height:42px;padding:0 2px;border:0;border-bottom:1px solid transparent;background:transparent;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;margin-bottom:-1px}
+.tab:hover{color:var(--text)}
+.tab.on{color:var(--text);border-bottom-color:var(--text)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--line2)}
+.row:last-child{border-bottom:0}
+.col{display:flex;flex-direction:column}
+.scroll{overflow-y:auto}
+/* tela baixa (notebook 1366x768): menos espaço em volta para os botões de baixo nunca sumirem */
+@media (max-height:820px){main header{padding:12px 28px!important}main footer{padding:10px 28px!important}
+  #prodBody{padding:16px 28px!important}aside.side{padding:14px 10px!important}.side .card{padding:12px!important}}
+.scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+.step{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 10px 0 4px;border-radius:15px;border:0;background:transparent;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer}
+.step:hover{color:var(--text)}
+.step.on{color:var(--text)}
+.step .n{width:22px;height:22px;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line3);font-size:11px;font-weight:600}
+.step.on .n{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
+.note{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:8px;font-size:13px;font-weight:500;line-height:1.5}
+.note.ok{background:var(--okbg);border:1px solid var(--okline);color:var(--ok)}
+.note.warn{background:var(--warnbg);border:1px solid var(--warnline);color:var(--warn)}
+.note.bad{background:var(--badbg);border:1px solid var(--badline);color:var(--bad)}
+.note.info{background:var(--tint);border:1px solid var(--line3);color:var(--text2)}
+.drop{display:flex;align-items:center;gap:16px;padding:16px;border-radius:10px;border:1px dashed var(--line3);background:transparent}
+.icon{width:40px;height:40px;border-radius:9px;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;color:var(--text2);flex-shrink:0}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.stage{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:10px;background:var(--panel);border:1px solid var(--line)}
+.stage.now{border-color:var(--tintline)}
+.dot{width:24px;height:24px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:1px solid var(--line3);color:var(--muted)}
+.stage.done .dot{border-color:var(--okline);color:var(--ok)}
+.stage.now .dot{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
+.bar{height:4px;border-radius:2px;background:var(--line2);overflow:hidden}
+.bar>div{height:4px;background:var(--acc);transition:width .4s}
+.thumb{height:84px;border-radius:6px;background:var(--raise) center/cover no-repeat;border:1px solid var(--line)}
+.prev{position:relative;overflow:hidden;border-radius:7px;border:1px solid var(--line)}
+.prev i{position:absolute;display:block}
+.prev img.pv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.prev .play{position:absolute;right:8px;bottom:8px;height:20px;padding:0 8px;border-radius:10px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;font-weight:600;letter-spacing:.04em;display:inline-flex;align-items:center;gap:5px;opacity:.85}
+.opt:hover .prev .play,.opt.on .prev .play,.prev img[data-play] ~ .play{opacity:0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:10}
+.modal .card{width:420px;display:flex;flex-direction:column;gap:14px;box-shadow:0 24px 64px rgba(0,0,0,.35)}
+.toast{position:fixed;right:24px;bottom:24px;z-index:20;padding:12px 16px;border-radius:10px;background:var(--panel);border:1px solid var(--line3);color:var(--text);font-size:13px;font-weight:500;max-width:440px;box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.toast.bad{border-color:var(--badline);background:var(--badbg);color:var(--bad)}
+.drow{display:grid;align-items:center;gap:14px;width:100%;padding:13px 22px;border:0;border-top:1px solid var(--line2);background:transparent;color:var(--text);text-align:left;font-size:13px;cursor:pointer}
+.drow:hover{background:var(--raise)}
+.drow.head{cursor:default;border-top:0;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-top:10px;padding-bottom:10px}
+.drow.head:hover{background:transparent}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:60px 20px;text-align:center;color:var(--muted)}
+.dotc{width:7px;height:7px;border-radius:4px;display:inline-block;flex-shrink:0}
+@media (max-width:1300px){.wide-only{display:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div style="display:flex;align-items:center;gap:11px;padding:4px 10px 26px 10px">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect x=".75" y=".75" width="26.5" height="26.5" rx="7" fill="none" style="stroke:var(--line3)" stroke-width="1.5"/><path d="M9.5 19V9.5l9 9.5V9.5" fill="none" style="stroke:var(--acc)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="col" style="gap:1px"><span class="h" style="font-size:14px;font-weight:600;letter-spacing:-.01em">nKiev</span><span style="font-size:10px;font-weight:500;letter-spacing:.24em;color:var(--muted)">STUDIO</span></div>
+    </div>
+    <div id="nav" class="col" style="gap:6px"></div>
+    <div style="flex-grow:1"></div>
+    <div style="display:flex;flex-direction:column;gap:4px;padding:12px 12px 4px;border-top:1px solid var(--line2)">
+      <span class="lbl" style="font-size:10px">Neste computador</span>
+      <span id="pc" style="font-size:12px;color:var(--text2)">Verificando…</span>
+    </div>
+  </aside>
+  <main id="main"></main>
+</div>
+<div id="layer"></div>
+
+<script>
+// ---------------------------------------------------------------- ponte com o Python
+// a página sempre vem do servidor local do app (janela ou navegador): tudo vai por /api/<método>
+const call = async (name, ...args) => {
+  try {
+    const r = await fetch('/api/' + name, {method: 'POST', body: JSON.stringify(args)});
+    const text = await r.text();
+    try { return JSON.parse(text); } catch (e) { return {erro: `resposta inválida do app em ${name} (${r.status})`}; }
+  } catch (e) { return {erro: String(e)}; }
+};
+const ready = () => Promise.resolve();
+
+// ---------------------------------------------------------------- paletas do app
+// sóbrias, sem neon: fundo neutro, linhas finas e um único tom de destaque (botão principal, seleção, progresso)
+const THEMES = {
+  grafite: {name: 'Grafite', acc: '#E9E3D5', acc2: '#F4EFE4', onacc: '#121212', bg: '#0D0D0F', side: '#0A0A0B', panel: '#141417', line: '#26262B', line2: '#1C1C20', text: '#EDEDEF', text2: '#C4C4CA', muted: '#8B8B94'},
+  onix: {name: 'Ônix', acc: '#FFFFFF', acc2: '#E6E6E6', onacc: '#000000', bg: '#000000', side: '#000000', panel: '#0B0B0C', line: '#222225', line2: '#161618', text: '#F5F5F5', text2: '#CFCFD4', muted: '#8E8E96'},
+  ardosia: {name: 'Ardósia', acc: '#B7C6D6', acc2: '#C9D5E2', onacc: '#0E1116', bg: '#0E1116', side: '#0B0D11', panel: '#141821', line: '#262C37', line2: '#1B2029', text: '#E8ECF2', text2: '#C3CAD5', muted: '#8A94A3'},
+  salvia: {name: 'Sálvia', acc: '#BFC9AE', acc2: '#CFD7C1', onacc: '#0E100E', bg: '#0E100E', side: '#0B0C0B', panel: '#151815', line: '#272B26', line2: '#1C1F1B', text: '#ECEEE9', text2: '#C6CAC1', muted: '#8D9388'},
+  areia: {name: 'Areia (claro)', light: true, acc: '#1B1A17', acc2: '#33312C', onacc: '#FFFFFF', bg: '#F5F3EE', side: '#EFECE5', panel: '#FFFFFF', line: '#E1DDD3', line2: '#ECE8E0', text: '#1B1A17', text2: '#3D3A34', muted: '#7A756B'},
+};
+const DEFAULT_THEME = 'grafite';
+const hexRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const mix = (a, b, k) => '#' + hexRgb(a).map((v, i) => Math.round(v * k + hexRgb(b)[i] * (1 - k)).toString(16).padStart(2, '0')).join('');
+function applyTheme(id) {
+  const t = THEMES[id] || THEMES[DEFAULT_THEME], r = document.documentElement.style;
+  const st = t.light ? {ok: '#2F7A4F', warn: '#8A6414', bad: '#A33A3A'} : {ok: '#8FD4A8', warn: '#E3C27A', bad: '#E59A9A'};
+  const vars = {
+    acc: t.acc, acc2: t.acc2, soft: t.acc, onacc: t.onacc, bg: t.bg, side: t.side, panel: t.panel,
+    line: t.line, line2: t.line2, text: t.text, text2: t.text2, muted: t.muted,
+    tint: mix(t.text, t.panel, 0.04), tint2: mix(t.text, t.panel, 0.08), tintline: mix(t.text, t.panel, 0.42),
+    hover: mix(t.text, t.panel, 0.22), raise: mix(t.text, t.panel, 0.04), raise2: mix(t.text, t.panel, 0.08),
+    opt: t.panel, navhover: mix(t.text, t.side, 0.05), line3: mix(t.text, t.line, 0.1),
+    edge: t.line2, foot: t.bg,
+    ok: st.ok, okbg: mix(st.ok, t.bg, 0.09), okline: mix(st.ok, t.bg, 0.32),
+    warn: st.warn, warnbg: mix(st.warn, t.bg, 0.09), warnline: mix(st.warn, t.bg, 0.32),
+    bad: st.bad, badbg: mix(st.bad, t.bg, 0.09), badline: mix(st.bad, t.bg, 0.32),
+  };
+  Object.entries(vars).forEach(([k, v]) => r.setProperty('--' + k, v));
+  document.body.style.background = t.bg;
+  document.documentElement.style.colorScheme = t.light ? 'light' : 'dark';
+}
+applyTheme(window.__TEMA || DEFAULT_THEME);
+
+// ---------------------------------------------------------------- utilidades
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const $ = (id) => document.getElementById(id);
+const fmtDur = (s) => {
+  if (s == null) return '—';
+  s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+  return h ? `${h}h ${String(m).padStart(2, '0')}min` : m ? `${m} min` : `${s} s`;
+};
+const when = (ts) => {
+  if (!ts) return '';
+  const d = new Date(ts * 1000), now = new Date();
+  const hm = d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+  const day = d.toDateString() === now.toDateString() ? 'hoje' :
+    (new Date(now - 864e5).toDateString() === d.toDateString() ? 'ontem' : d.toLocaleDateString('pt-BR'));
+  return `${day}, ${hm}`;
+};
+let toastTimer;
+const toast = (msg, bad) => {
+  $('layer').querySelector('.toast')?.remove();
+  const el = document.createElement('div'); el.className = 'toast' + (bad ? ' bad' : ''); el.textContent = msg;
+  $('layer').appendChild(el); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.remove(), 4200);
+};
+const icons = {
+  prod: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/>',
+  fila: '<path d="M4 7h16M4 12h16M4 17h10"/>',
+  refresh: '<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>',
+  feitos: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16.5 9.5"/>',
+  canais: '<circle cx="9" cy="9" r="3.5"/><path d="M3 19c.8-3 3.2-4.5 6-4.5s5.2 1.5 6 4.5M16 6.5a3 3 0 0 1 0 5.5M18 14.8c1.4.6 2.5 2 3 4.2"/>',
+  bib: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  cfg: '<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M2.8 12h2.4M18.8 12h2.4M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/>',
+  text: '<path d="M5 6h14M12 6v13"/>', wave: '<path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>', bookmark: '<path d="M6 3h12v18l-6-4-6 4z"/>',
+};
+const ic = (k, size = 20) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[k]}</svg>`;
+
+// visual de cada estilo (só a miniatura; as cores de verdade vêm do canal)
+const LOOK = {
+  minimal: {bg: '#0A1636', a: '#FFCC00', b: '#3B5BA8', c: '#16244F', frame: 'solid'},
+  dossie: {bg: '#E9E2D3', a: '#C42E22', b: '#4A3F36', c: '#CFC6B5', frame: 'dashed'},
+  documentario: {bg: '#1E1E20', a: '#DE4038', b: '#FAF9F5', c: '#2C2C2E', frame: 'solid'},
+  broadcast: {bg: '#101826', a: '#E11D48', b: '#E5E7EB', c: '#1F2A44', frame: 'solid'},
+  dados: {bg: '#0E1424', a: '#38BDF8', b: '#94A3B8', c: '#152039', frame: 'solid'},
+  kinetic: {bg: '#0B0B0F', a: '#A855F7', b: '#F4F4F5', c: '#1A1A22', frame: 'solid'},
+  cinema: {bg: '#050505', a: '#D4B483', b: '#57534E', c: '#1C1917', frame: 'solid'},
+  mix: {bg: '#141024', a: '#8B5CF6', b: '#FFCC00', c: '#231B3F', frame: 'dashed'},
+};
+const lookPrev = (id, h, big) => {
+  const v = LOOK[id] || LOOK.mix, k = big ? 1.25 : 1;
+  return `<div class="prev" style="height:${h}px;background:${v.bg}">
+    <i style="left:14px;top:14px;width:${62 * k}px;height:6px;border-radius:3px;background:${v.a}"></i>
+    <i style="left:14px;top:28px;width:${118 * k}px;height:12px;border-radius:3px;background:${v.b}"></i>
+    <i style="right:14px;top:16px;width:${92 * k}px;height:${(h - 48)}px;border-radius:6px;border:2px ${v.frame} ${v.a};background:${v.c}"></i>
+    <i style="left:14px;bottom:14px;width:${84 * k}px;height:8px;border-radius:4px;background:${v.b};opacity:.6"></i>
+    <img class="pv" src="/previa/${id}.jpg" data-id="${id}" alt="" onerror="this.remove()"${big ? ' data-play="1"' : ''}>
+    <span class="play">▶ prévia</span></div>`;
+};
+// prévia animada: toca no cartão selecionado, na prévia grande e quando o mouse passa por cima
+let hoverStyle = '';
+function playPreviews() {
+  document.querySelectorAll('img.pv').forEach((img) => {
+    const card = img.closest('.opt');
+    const play = img.dataset.play || (card && card.classList.contains('on')) || img.dataset.id === hoverStyle;
+    const want = `/previa/${img.dataset.id}.${play ? 'webp' : 'jpg'}`;
+    if (!img.getAttribute('src').endsWith(want)) img.setAttribute('src', want);
+  });
+}
+document.addEventListener('pointerover', (e) => {
+  const card = e.target.closest && e.target.closest('.opt[data-style]');
+  const id = card ? card.dataset.style : '';
+  if (id !== hoverStyle) { hoverStyle = id; playPreviews(); }
+});
+
+// ---------------------------------------------------------------- som da interface
+const UI = {sound: true};  // vem das preferências do app (projetos/), ligado por padrão
+let actx = null, lastHover = null, lastTick = 0;
+function audio() {
+  if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+  if (actx.state === 'suspended') actx.resume().catch(() => {});
+  return actx;
+}
+// clique suave, quase imperceptível: um "tic" agudo curto, filtrado e baixinho
+function tick(vol = 0.045) {
+  if (!UI.sound) return;
+  const a = audio();
+  if (!a || a.state !== 'running') return;
+  const t = a.currentTime, o = a.createOscillator(), g = a.createGain(), f = a.createBiquadFilter();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(2200, t);
+  o.frequency.exponentialRampToValueAtTime(1250, t + 0.03);
+  f.type = 'lowpass'; f.frequency.value = 3400;
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + 0.003);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+  o.connect(f); f.connect(g); g.connect(a.destination);
+  o.start(t); o.stop(t + 0.06);
+}
+const CLICKABLE = 'button, a[href], select, .opt, .nav, .step, .segb, .sw, .drow:not(.head), [data-open], [data-go]';
+document.addEventListener('pointerover', (e) => {
+  const el = e.target.closest && e.target.closest(CLICKABLE);
+  if (!el || el === lastHover || el.disabled) return;
+  lastHover = el;
+  const now = performance.now();
+  if (now - lastTick < 45) return;
+  lastTick = now; tick();
+});
+document.addEventListener('pointerout', (e) => {
+  const el = e.target.closest && e.target.closest(CLICKABLE);
+  if (el && !el.contains(e.relatedTarget)) lastHover = null;
+});
+['pointerdown', 'keydown'].forEach((ev) => document.addEventListener(ev, () => audio(), {once: true}));
+
+// ---------------------------------------------------------------- estado
+const DEFAULT_SETTINGS = {rhythm: 'normal', pace: 'normal', statements: true, phrases: true, music: true, sfx: true, review: false, avatar: true, character: true, vol: 12,
+  format: 'horizontal', captions: 'auto', cap_size: 'media', cut_silence: false};
+const S = {
+  screen: 'prod', step: 1, data: null, queue: [], sel: null, qtab: 'acomp', detail: null,
+  form: {title: '', script: '', scriptInfo: null, audio: null, channel: '', channelPicked: false, style: 'minimal',
+         settings: {...DEFAULT_SETTINGS}, preset: ''},
+  keys: null, machine: null, newCh: {name: '', language: 'en', currency: '£', niche: 'automotivo', palette: 'grafite', paper: true, avatar: {id: '', kind: 'avatar', layout: 'full', photo: '', engine: 'avatar_iv', position: 'right', name: '', preview: ''}}, avList: null, avFilter: '', editCh: null, editName: '',
+  busy: false,
+};
+const chan = () => (S.data?.canais || []).find((c) => c.file === S.form.channel);
+const style = () => (S.data?.estilos || []).find((x) => x.id === S.form.style) || {name: '—', removes: []};
+
+// ---------------------------------------------------------------- barra lateral
+function renderNav() {
+  const active = S.queue.filter((j) => j.status === 'fila' || j.status === 'produzindo').length;
+  const done = S.queue.filter((j) => j.status === 'pronto').length;
+  const items = [['prod', 'Produzir'], ['fila', 'Fila'], ['feitos', 'Concluídos'], ['canais', 'Canais'], ['bib', 'Biblioteca'], ['cfg', 'Configurações']];
+  $('nav').innerHTML = items.map(([id, label]) => `<button class="nav${S.screen === id ? ' on' : ''}" data-go="${id}">
+    ${ic(id)}<span style="flex-grow:1">${label}</span>${id === 'fila' && active ? `<span class="badge">${active}</span>` : ''}${id === 'feitos' && done ? `<span class="tag" style="height:22px">${done}</span>` : ''}</button>`).join('');
+  $('nav').querySelectorAll('[data-go]').forEach((b) => b.onclick = () => go(b.dataset.go));
+}
+function go(screen) {
+  S.screen = screen; renderNav(); render();
+  if (screen === 'cfg') loadKeys();
+  if (screen === 'fila' || screen === 'feitos') { S.qtab = 'acomp'; S.openDone = null; refreshQueue(true); }
+}
+
+// ---------------------------------------------------------------- PRODUZIR
+const stepNames = ['Canal e conteúdo', 'Estilo', 'Ajustes', 'Revisar'];
+function renderProd() {
+  const f = S.form, c = chan();
+  const steps = stepNames.map((n, i) => `<button class="step${S.step === i + 1 ? ' on' : ''}" data-step="${i + 1}"><span class="n">${i + 1}</span>${n}</button>`).join('');
+  const body = [stepOne, stepTwo, stepThree, stepFour][S.step - 1]();
+  const nextLabel = ['Escolher estilo', 'Ajustes', 'Revisar', 'Produzir'][S.step - 1];
+  return `<div class="col" style="height:100%">
+  <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 36px;border-bottom:1px solid var(--edge);flex-wrap:wrap">
+    <div class="col" style="gap:4px"><span class="h" style="font-size:22px;font-weight:600">${S.remake ? 'Produzir novamente' : 'Novo vídeo'}</span>
+      <span class="sub">${S.remake ? 'Mesmo roteiro e áudio, com o estilo e os ajustes que você escolher.' : 'Escolha o canal, cole o roteiro, escolha o áudio e a cara do vídeo.'}</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">${steps}</div>
+  </header>
+  <div id="prodBody" style="flex-grow:1;display:flex;gap:24px;padding:26px 36px;min-height:0">
+    <div class="scroll col" id="pane" style="flex-grow:1;gap:20px;padding-right:6px;min-width:0">${remakeNote()}${body}</div>
+    ${sidePanel(c)}
+  </div>
+  <footer style="display:flex;align-items:center;justify-content:space-between;padding:16px 36px;border-top:1px solid var(--edge);background:var(--foot)">
+    <button class="ghost" id="back" ${S.step === 1 ? 'style="visibility:hidden"' : ''}>← Voltar</button>
+    <div style="display:flex;align-items:center;gap:18px"><span class="sub">Etapa ${S.step} de 4</span>
+      <button class="primary" id="next" ${S.busy ? 'disabled' : ''}>${S.busy ? 'Enviando…' : nextLabel + ' →'}</button></div>
+  </footer></div>`;
+}
+
+function remakeNote() {
+  if (!S.remake) return '';
+  return `<div class="note ok" style="justify-content:space-between;gap:16px;flex-wrap:nowrap"><span class="col" style="gap:3px;min-width:0"><span>Produzindo novamente: ${esc(S.remake)}</span>
+    <span style="font-weight:500;color:var(--text2)">Roteiro, áudio, título e canal já estão aqui. Escolha o estilo e os ajustes e mande produzir; o vídeo anterior continua em Concluídos.</span></span>
+    <button class="btn" style="flex-shrink:0" data-act="clearRemake">Começar do zero</button></div>`;
+}
+function sidePanel(c) {
+  const f = S.form, st = style();
+  const rows = [['Canal', c ? c.name : '—'], ['Estilo', st.name], ['Idioma', c ? c.language_name : '—'],
+    ['Moeda', c ? (c.currency || 'da fala') : '—'], ['Ritmo', {calmo: 'Calmo', normal: 'Normal', intenso: 'Intenso'}[f.settings.rhythm]],
+    ['Cortes', f.settings.pace === 'rapido' ? 'Rápidos' : 'Normais'], ['Música', f.settings.music ? `${f.settings.vol}%` : 'Sem música']];
+  return `<aside class="wide-only scroll" style="width:320px;flex-shrink:0;display:flex;flex-direction:column;gap:16px;min-height:0;padding-right:4px">
+    <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:14px">
+      <span class="lbl">Prévia do estilo</span>${lookPrev(f.style, 160, true)}
+      <span class="h" style="font-size:16px;font-weight:600">Configuração deste vídeo</span>
+      <div class="col">${rows.map(([k, v]) => `<div style="display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:13px"><span style="color:var(--muted)">${k}</span><span style="font-weight:600;text-align:right">${esc(v)}</span></div>`).join('')}</div>
+      <button class="btn" id="savePreset" ${c ? '' : 'disabled'}>${ic('bookmark', 16)}Salvar como preset do canal</button>
+      <span class="sub" style="font-size:12px">Estilo e ajustes. Título, roteiro e áudio ficam fora do preset.</span>
+    </div></aside>`;
+}
+
+function stepOne() {
+  const f = S.form, c = chan(), info = f.scriptInfo;
+  const chans = (S.data?.canais || []).map((x) => `<button class="opt${f.channel === x.file ? ' on' : ''}" data-ch="${esc(x.file)}">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="width:34px;height:34px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;background:${x.bg};color:${x.accent};border:1px solid ${x.accent};flex-shrink:0">${esc(x.initials)}</span>
+        <div class="col" style="min-width:0"><span style="font-size:15px;font-weight:600">${esc(x.name)}</span>
+        <span style="font-size:12px;color:var(--muted)">${esc(x.language_name)} · ${esc(x.currency || '—')} · ${esc(x.niche_name)}</span></div></div></button>`).join('');
+  const presets = c ? Object.keys(c.presets || {}) : [];
+  const presetSel = `<label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)">Preset
+      <select class="input" id="preset" style="width:220px;height:40px" ${presets.length ? '' : 'disabled'}>
+      <option value="">${presets.length ? 'Nenhum (ajustar à mão)' : 'Nenhum preset salvo'}</option>
+      ${presets.map((p) => `<option ${f.preset === p ? 'selected' : ''}>${esc(p)}</option>`).join('')}</select></label>`;
+  const detected = detectedHtml(), match = matchHtml();
+  const audio = f.audio ? `<div class="drop"><div class="icon">${ic('wave', 22)}</div>
+      <div class="col" style="flex-grow:1;gap:4px;min-width:0"><span style="font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis">${esc(f.audio.name)}</span>
+      <span class="sub">${esc(f.audio.clock || 'duração desconhecida')} · ${f.audio.mb} MB · ${esc(f.audio.path)}</span></div>
+      <button class="btn" data-act="pickAudio">Trocar áudio</button></div>`
+    : `<div class="drop"><div class="icon">${ic('wave', 22)}</div><div class="col" style="flex-grow:1;gap:4px"><span style="font-size:15px;font-weight:600">Nenhum áudio escolhido</span><span class="sub">A narração final (mp3, wav, m4a…). Ela fica onde está no seu computador.</span></div>
+      <button class="primary" data-act="pickAudio">Escolher áudio</button></div>`;
+  const fmt = f.settings.format === 'vertical' ? 'vertical' : 'horizontal';
+  const shape = (wd, ht) => `<span style="width:${wd}px;height:${ht}px;border-radius:6px;border:2px solid currentColor;display:inline-block;flex-shrink:0"></span>`;
+  const formats = [
+    ['horizontal', 'Vídeo horizontal', 'YouTube · 16:9 · 1920x1080', 'Do jeito de sempre: templates, overlays, avatar e ritmo do vídeo longo.', shape(46, 26)],
+    ['vertical', 'Vídeo vertical', 'Shorts, Reels, TikTok · 9:16 · 1080x1920', 'Já sai pronto para o curto: tela cheia em pé, legenda animada, sem pausas na narração e cortes rápidos. Nenhum recurso sai.', shape(26, 46)],
+  ].map(([id, name, sub, desc, icon]) => `<button class="opt${fmt === id ? ' on' : ''}" data-format="${id}" style="gap:10px;padding:16px">
+      <div style="display:flex;align-items:center;gap:14px">${icon}<div class="col" style="gap:2px;min-width:0"><span style="font-size:16px;font-weight:600">${name}</span>
+      <span style="font-size:12px;color:var(--muted)">${sub}</span></div>${fmt === id ? '<span class="tag acc" style="margin-left:auto">Selecionado</span>' : ''}</div>
+      <span style="font-size:13px;color:var(--muted);line-height:1.45">${desc}</span></button>`).join('');
+  return `<section class="card col" style="gap:16px">
+      <span class="h" style="font-size:16px;font-weight:600">Que tipo de vídeo?</span>
+      <div class="grid2">${formats}</div>
+    </section>
+    <section class="card col" style="gap:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><span class="h" style="font-size:16px;font-weight:600">Para qual canal?</span>${presetSel}</div>
+      <div class="grid3">${chans}<button class="opt" data-go2="canais" style="align-items:center;justify-content:center;border-style:dashed;color:var(--muted)"><span style="font-size:22px;line-height:1">+</span><span style="font-size:13px;font-weight:600">Novo canal</span></button></div>
+    </section>
+    <section class="card col" style="gap:16px">
+      <div class="col" style="gap:4px"><span class="h" style="font-size:16px;font-weight:600">Conteúdo do vídeo</span><span class="sub">O roteiro e o áudio pertencem só a esta produção.</span></div>
+      <label class="col" style="gap:8px;font-size:13px;color:var(--muted)">Nome do vídeo<input class="input" id="title" value="${esc(f.title)}" placeholder="Ex.: 21 SUVs Built to Last Forever"></label>
+      <div class="col" style="gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px">${ic('text', 16)}Meu roteiro</span>
+          <button class="btn" data-act="pickScript">Abrir arquivo .txt</button></div>
+        <textarea class="input scroll" id="script" style="height:220px;resize:vertical;line-height:1.65" placeholder="Cole aqui o roteiro (o mesmo texto da narração)">${esc(f.script)}</textarea>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <div style="display:flex;gap:8px" id="counts">${counts()}</div><span id="detected">${detected}</span></div>
+      </div>
+      <div class="col" style="gap:10px"><span style="font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px">${ic('wave', 16)}Meu áudio</span>${audio}<div id="match">${match}</div></div>
+    </section>`;
+}
+function detectedHtml() {
+  const c = chan(), info = S.form.scriptInfo;
+  if (!info || !info.lang) return '';
+  const hit = (S.data?.canais || []).find((x) => x.file === info.channel);
+  if (c && c.language && c.language !== info.lang)
+    return `<span class="tag" style="color:var(--warn);border-color:var(--warnline)">${esc(info.lang_name)} detectado · o canal é ${esc(c.language_name)}</span>`;
+  return `<span class="tag acc">${esc(info.lang_name)} detectado${hit ? ' → ' + esc(hit.name) : ''}</span>`;
+}
+function matchHtml() {
+  const f = S.form, info = f.scriptInfo;
+  if (!(f.audio && f.audio.seconds && info && info.words)) return '';
+  const ratio = (info.words / 150 * 60) / f.audio.seconds;
+  return ratio > 0.6 && ratio < 1.6
+    ? `<div class="note ok">${ic('check', 18)}Roteiro ≈ ${info.minutes} min e áudio ${esc(f.audio.clock)} batem. Pode seguir.</div>`
+    : `<div class="note warn">Roteiro ≈ ${info.minutes} min, mas o áudio tem ${esc(f.audio.clock)}. Confira se é o áudio deste roteiro.</div>`;
+}
+const counts = () => {
+  const i = S.form.scriptInfo || {words: 0, chars: 0, minutes: 0};
+  return `<span class="tag">${i.words} palavras</span><span class="tag">${i.chars} caracteres</span><span class="tag">≈ ${i.minutes} min de narração</span>`;
+};
+
+function stepTwo() {
+  const c = chan(), blocked = new Set(c ? c.blocked : []);
+  const cards = (S.data?.estilos || []).map((x) => `<button class="opt${S.form.style === x.id ? ' on' : ''}" data-style="${x.id}" style="gap:10px;padding:12px">
+      ${lookPrev(x.id, 118)}
+      <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:15px;font-weight:600">${esc(x.name)}</span>
+      ${S.form.style === x.id ? '<span class="tag acc">Selecionado</span>' : ''}</div>
+      <span style="font-size:13px;color:var(--muted);line-height:1.45">${esc(x.desc)}</span></button>`).join('');
+  let warn = '';
+  if (S.form.style === 'dossie' && (blocked.has('dossier') || blocked.has('file')))
+    warn = `<div class="note info">${esc(c.name)} normalmente não usa o visual de papel, mas neste vídeo vale a sua escolha: com o Dossiê entram as polaroides, fichas e o resto do papel normalmente.</div>`;
+  return `<section class="card col" style="gap:18px">
+      <div class="col" style="gap:4px"><span class="h" style="font-size:16px;font-weight:600">A cara do seu vídeo</span>
+      <span class="sub">O estilo é só deste vídeo; as cores vêm do canal. O mesmo estilo sai diferente em cada canal.</span></div>
+      ${warn}<div class="grid3">${cards}</div></section>`;
+}
+
+function stepThree() {
+  const s = S.form.settings;
+  const seg = (key, defs) => `<div class="seg">${defs.map(([id, label]) => `<button class="segb${s[key] === id ? ' on' : ''}" data-set="${key}" data-val="${id}">${label}</button>`).join('')}</div>`;
+  const tg = [['statements', 'Telas pretas com frase', 'Frases de impacto em tela preta, em momentos sorteados.'],
+    ['phrases', 'Frases de destaque', 'Marca-texto ou palavra grande sobre o b-roll.'],
+    ['music', 'Música de fundo', 'Desligada: você coloca a música depois, no editor.'],
+    ['sfx', 'Efeitos sonoros', 'Whoosh, digitação e cliques sincronizados com as animações.'],
+    ['review', 'Revisão das imagens pela IA', 'A IA olha as miniaturas e troca as que não combinam. Mais acerto, custa alguns centavos a mais.']];
+  const av = chan()?.avatar;
+  if (av && av.photo) tg.push(['character', 'Imagens do personagem em cena', 'Fotos do personagem do canal fazendo o que a fala diz, depois de cada aparição e nos momentos fortes. Geradas pela OpenAI (centavos por imagem) e guardadas por canal: os próximos vídeos reaproveitam as parecidas sem pagar de novo.']);
+  if (av && (av.id || av.photo)) tg.push(['avatar', 'Avatar apresentador (HeyGen)', `O personagem do canal fala ${av.layout === 'corner' ? 'num canto' : 'em tela cheia'} na abertura, na chamada para se inscrever e no final, com a sua narração. Usa créditos da HeyGen.`]);
+  return `<section class="card col" style="gap:4px">
+    <div class="col" style="gap:4px;padding-bottom:8px"><span class="h" style="font-size:16px;font-weight:600">Ajustes</span><span class="sub">Os padrões já funcionam bem. Mude só o que quiser para este vídeo.</span></div>
+    <div class="row"><div class="col" style="gap:2px"><span style="font-weight:600">Ritmo dos recursos</span><span class="sub">De quanto em quanto tempo entram templates, frases e legendas.</span></div>${seg('rhythm', [['calmo', 'Calmo'], ['normal', 'Normal'], ['intenso', 'Intenso']])}</div>
+    <div class="row"><div class="col" style="gap:2px"><span style="font-weight:600">Ritmo de corte</span><span class="sub">Rápido = planos de 1,3 a 4 segundos.</span></div>${seg('pace', [['normal', 'Normal'], ['rapido', 'Rápido']])}</div>
+    ${tg.map(([id, label, desc]) => `<div class="row"><div class="col" style="gap:2px"><span style="font-weight:600">${label}</span><span class="sub">${desc}</span></div>
+      <button class="sw${s[id] ? ' on' : ''}" data-flip="${id}" aria-label="${label}"><span class="knob"></span></button></div>`).join('')}
+    <div class="row"><div class="col" style="gap:2px"><span style="font-weight:600">Volume da música</span><span class="sub">Em relação à narração.</span></div>
+      <div style="display:flex;align-items:center;gap:12px"><input type="range" id="vol" min="0" max="30" value="${s.vol}" style="width:220px;accent-color:var(--acc)" ${s.music ? '' : 'disabled'}><span class="tag" id="volv">${s.vol}%</span></div></div>
+    <div class="row"><div class="col" style="gap:2px"><span style="font-weight:600">Cortar pausas da narração</span><span class="sub">Tira os silêncios longos entre as frases (fica um respiro curto). Vídeo curto precisa ser preenchido do começo ao fim.</span></div>
+      <button class="sw${s.cut_silence ? ' on' : ''}" data-flip="cut_silence" aria-label="Cortar pausas"><span class="knob"></span></button></div>
+  </section>
+  ${captionPicker(s)}`;
+}
+
+function captionPicker(s) {
+  const list = S.data?.legendas || [];
+  const vertical = s.format === 'vertical';
+  const current = s.captions === 'auto' ? (vertical ? 'frase' : 'off') : s.captions;
+  const off = `<button class="opt${current === 'off' ? ' on' : ''}" data-cap="off" style="gap:8px;padding:10px;align-items:center;justify-content:center;min-height:120px">
+      <span style="font-size:14px;font-weight:600">Sem legenda</span><span class="sub" style="text-align:center">${vertical ? 'Não recomendado no vertical: muita gente assiste sem som.' : 'O padrão do vídeo deitado.'}</span></button>`;
+  const cards = list.map((x) => `<button class="opt${current === x.id ? ' on' : ''}" data-cap="${x.id}" style="gap:8px;padding:8px">
+      ${x.preview ? `<img src="${x.still || x.preview}" data-anim="${x.preview}" alt="" style="width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:8px;background:var(--line)">` : '<div style="width:100%;aspect-ratio:9/16;border-radius:8px;background:var(--line)"></div>'}
+      <span style="font-size:13px;font-weight:600">${esc(x.name)}</span></button>`).join('');
+  return `<section class="card col" style="gap:14px">
+    <div class="col" style="gap:4px"><span class="h" style="font-size:16px;font-weight:600">Legenda animada</span>
+      <span class="sub">Queimada no vídeo, no tempo de cada palavra. Passe o mouse para ver a animação. A cor de destaque é a do canal.</span></div>
+    <div class="grid4" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px">${off}${cards}</div>
+    ${current === 'off' ? '' : `<div class="row"><div class="col" style="gap:2px"><span style="font-weight:600">Tamanho da letra</span><span class="sub">Vale para qualquer estilo de legenda.</span></div>
+      <div style="display:flex;gap:6px">${[['pequena', 'Pequena'], ['media', 'Média'], ['grande', 'Grande']].map(([v, l]) =>
+        `<button class="opt${(s.cap_size || 'media') === v ? ' on' : ''}" data-capsize="${v}" style="padding:8px 14px">${l}</button>`).join('')}</div></div>`}</section>`;
+}
+
+function stepFour() {
+  const f = S.form, c = chan(), st = style(), info = f.scriptInfo || {words: 0};
+  const problems = [];
+  if (!c) problems.push('Escolha o canal (etapa 1).');
+  if (!info.words || info.words < 8) problems.push('Cole o roteiro (etapa 1).');
+  if (!f.audio) problems.push('Escolha o áudio da narração (etapa 1).');
+  if (!S.data?.chaves_ok) problems.push('Faltam as chaves do Pexels/Pixabay em Configurações.');
+  const rows = [['Vídeo', f.title || '(sem nome: usa o nome do áudio)'], ['Canal', c ? c.name : '—'], ['Estilo', st.name],
+    ['Roteiro', `${info.words || 0} palavras`], ['Áudio', f.audio ? `${f.audio.name} · ${f.audio.clock || '?'}` : '—'],
+    ['Formato', f.settings.format === 'vertical' ? '9:16 · Shorts (1080x1920)' : '16:9 · YouTube (1920x1080)'],
+    ['Legenda', (() => { const c = f.settings.captions === 'auto' ? (f.settings.format === 'vertical' ? 'frase' : 'off') : f.settings.captions;
+      if (c === 'off') return 'Sem legenda';
+      const size = {pequena: ' · letra pequena', grande: ' · letra grande'}[f.settings.cap_size] || '';
+      return ((S.data?.legendas || []).find((x) => x.id === c)?.name || c) + size; })()],
+    ['Pasta do vídeo', c ? c.videos_dir : '—']];
+  const queued = S.queue.filter((j) => j.status === 'fila' || j.status === 'produzindo').length;
+  return `<section class="card col" style="gap:4px"><span class="h" style="font-size:16px;font-weight:600;padding-bottom:8px">Revisar e produzir</span>
+      ${rows.map(([k, v]) => `<div class="row"><span class="sub" style="font-size:14px">${k}</span><span style="font-weight:600;text-align:right">${esc(v)}</span></div>`).join('')}</section>
+    ${problems.length ? `<div class="note bad">${problems.map(esc).join('<br>')}</div>` : ''}
+    <div class="grid2">
+      <div class="card col" style="gap:6px"><span class="lbl">Na fila</span><span class="h" style="font-size:30px;font-weight:600">${queued ? `${queued} antes` : 'Começa já'}</span>
+        <span class="sub">${queued ? `Começa depois dos ${queued} vídeo(s) que já estão na fila.` : 'Nenhum vídeo na frente: começa assim que você mandar.'} O andamento aparece em porcentagem na Fila.</span></div>
+      <div class="card col" style="gap:6px"><span class="lbl">Enquanto produz</span><span class="h" style="font-size:20px;font-weight:600">Pode fechar esta tela</span>
+        <span class="sub">O vídeo vai para a Fila e o app produz um por vez. Só não feche o app até terminar.</span></div>
+    </div>`;
+}
+
+function bindProd() {
+  document.querySelectorAll('[data-step]').forEach((b) => b.onclick = () => { S.step = +b.dataset.step; render(); });
+  $('back') && ($('back').onclick = () => { S.step = Math.max(1, S.step - 1); render(); });
+  $('next').onclick = () => (S.step < 4 ? (S.step++, render()) : produce());
+  $('savePreset') && ($('savePreset').onclick = savePreset);
+  document.querySelectorAll('[data-ch]').forEach((b) => b.onclick = () => pickChannel(b.dataset.ch, true));
+  document.querySelectorAll('[data-go2]').forEach((b) => b.onclick = () => go(b.dataset.go2));
+  document.querySelectorAll('[data-style]').forEach((b) => b.onclick = () => { S.form.style = b.dataset.style; render(); });
+  document.querySelectorAll('[data-set]').forEach((b) => b.onclick = () => {
+    const st = S.form.settings, key = b.dataset.set;
+    if (key === 'format' && st.format !== b.dataset.val) st.cut_silence = b.dataset.val === 'vertical';  // vídeo curto: sem pausas
+    st[key] = b.dataset.val; render();
+  });
+  document.querySelectorAll('[data-format]').forEach((b) => b.onclick = () => {
+    // o formato já deixa tudo pronto para ele: no vertical, legenda (automática) e corte das pausas ligados
+    const st = S.form.settings, v = b.dataset.format;
+    if (st.format !== v) { st.cut_silence = v === 'vertical'; st.captions = 'auto'; }
+    st.format = v; render();
+  });
+  document.querySelectorAll('[data-cap]').forEach((b) => b.onclick = () => { S.form.settings.captions = b.dataset.cap; render(); });
+  document.querySelectorAll('[data-capsize]').forEach((b) => b.onclick = () => { S.form.settings.cap_size = b.dataset.capsize; render(); });
+  document.querySelectorAll('img[data-anim]').forEach((img) => {  // prévia animada só com o mouse em cima
+    const still = img.getAttribute('src');
+    img.onmouseenter = () => { img.src = img.dataset.anim; };
+    img.onmouseleave = () => { img.src = still; };
+  });
+  document.querySelectorAll('[data-flip]').forEach((b) => b.onclick = () => { const k = b.dataset.flip; S.form.settings[k] = !S.form.settings[k]; render(); });
+  document.querySelectorAll('[data-act="pickAudio"]').forEach((b) => b.onclick = pickAudio);
+  document.querySelectorAll('[data-act="pickScript"]').forEach((b) => b.onclick = pickScript);
+  document.querySelectorAll('[data-act="clearRemake"]').forEach((b) => b.onclick = () => {
+    S.remake = null; S.form = {...S.form, title: '', script: '', scriptInfo: null, audio: null, channelPicked: false, preset: ''};
+    S.step = 1; render();
+  });
+  $('vol') && ($('vol').oninput = (e) => { S.form.settings.vol = +e.target.value; $('volv').textContent = e.target.value + '%'; });
+  $('title') && ($('title').oninput = (e) => { S.form.title = e.target.value; });
+  $('preset') && ($('preset').onchange = (e) => applyPreset(e.target.value));
+  if ($('script')) {
+    let t; $('script').oninput = (e) => { S.form.script = e.target.value; clearTimeout(t); t = setTimeout(analyzeScript, 350); };
+  }
+}
+
+function pickChannel(file, manual) {
+  S.form.channel = file; if (manual) S.form.channelPicked = true; S.form.preset = '';
+  render();
+}
+function applyPreset(name) {
+  const c = chan(); S.form.preset = name;
+  const p = c && c.presets ? c.presets[name] : null;
+  if (p) { S.form.settings = {...DEFAULT_SETTINGS, ...p}; if (p.style) S.form.style = p.style; toast(`Preset "${name}" aplicado.`); }
+  render();
+}
+async function analyzeScript() {
+  const info = await call('analisar_roteiro', S.form.script);
+  if (info.erro) return;
+  S.form.scriptInfo = info;
+  if (!S.form.channelPicked && info.channel) { S.form.channel = info.channel; render(); return; }
+  if ($('counts')) { $('counts').innerHTML = counts(); $('detected').innerHTML = detectedHtml(); $('match').innerHTML = matchHtml(); }
+}
+async function pickScript() {
+  const r = await call('escolher_roteiro');
+  if (!r) return; if (r.erro) return toast(r.erro, true);
+  S.form.script = r.text; S.form.scriptInfo = r;
+  if (!S.form.title) S.form.title = r.name.replace(/\.[^.]+$/, '');
+  if (!S.form.channelPicked && r.channel) S.form.channel = r.channel;
+  render();
+}
+async function pickAudio() {
+  const r = await call('escolher_audio');
+  if (!r) return; if (r.erro) return toast(r.erro, true);
+  S.form.audio = r; render();
+}
+function savePreset() {
+  const c = chan(); if (!c) return;
+  modal(`<span class="h" style="font-size:18px;font-weight:600">Salvar preset de ${esc(c.name)}</span>
+    <span class="sub">Guarda o estilo e os ajustes atuais. Depois é só escolher no começo do próximo vídeo.</span>
+    <input class="input" id="pname" placeholder="Ex.: Ranking padrão" value="${esc(S.form.preset || '')}">
+    <div style="display:flex;justify-content:flex-end;gap:10px"><button class="ghost" id="mcancel">Cancelar</button><button class="primary" id="mok">Salvar preset</button></div>`);
+  $('pname').focus();
+  $('mok').onclick = async () => {
+    const name = $('pname').value.trim(); if (!name) return;
+    const r = await call('salvar_preset', c.file, name, {...S.form.settings, style: S.form.style});
+    if (r.erro) return toast(r.erro, true);
+    c.presets = r; S.form.preset = name; closeModal(); toast('Preset salvo.'); render();
+  };
+}
+async function produce() {
+  S.busy = true; render();
+  const f = S.form;
+  const r = await call('produzir', {title: f.title, channel: f.channel, style: f.style, script: f.script,
+    audio: f.audio ? f.audio.path : '', settings: f.settings});
+  S.busy = false;
+  if (r.erro) { render(); return toast(r.erro, true); }
+  toast('Vídeo enviado para a fila.');
+  S.remake = null;
+  S.form = {...S.form, title: '', script: '', scriptInfo: null, audio: null, channelPicked: false, preset: ''};
+  S.step = 1; S.sel = r.id; S.qtab = 'acomp'; S.detail = null;
+  await refreshQueue(); go('fila');
+}
+
+// produzir novamente: roteiro, áudio, título e canal de um vídeo já feito; estilo e ajustes para escolher de novo
+async function remake(jobId) {
+  const r = await call('reabrir', jobId);
+  if (!r || r.erro) return toast(r ? r.erro : 'Não deu para reabrir o vídeo.', true);
+  S.form = {title: r.title, script: r.script, scriptInfo: r.scriptInfo, audio: r.audio, channel: r.channel,
+            channelPicked: true, style: r.style || 'mix', settings: {...DEFAULT_SETTINGS, ...(r.settings || {})}, preset: ''};
+  S.remake = r.title;
+  S.step = r.audio && r.channel ? 2 : 1;  // faltou o áudio/canal: começa pela etapa 1 para escolher
+  go('prod');
+  if (r.aviso) toast(r.aviso, true);
+}
+
+// ---------------------------------------------------------------- FILA
+const STATUS = {fila: ['Na fila', 'var(--muted)'], produzindo: ['Produzindo', 'var(--text)'], pronto: ['Pronto', 'var(--ok)'],
+                erro: ['Deu erro', 'var(--bad)'], cancelado: ['Cancelado', 'var(--muted)']};
+const isQueueScreen = () => S.screen === 'fila' || S.screen === 'feitos';
+const listFor = (screen) => S.queue.filter((j) => (j.status === 'pronto') === (screen === 'feitos'));
+async function refreshQueue(withDetail) {
+  const q = await call('fila');
+  if (Array.isArray(q)) {
+    const before = Object.fromEntries(S.queue.map((j) => [j.id, j.status]));
+    S.queue = q;
+    const fresh = q.find((j) => j.status === 'pronto' && before[j.id] && before[j.id] !== 'pronto');
+    if (fresh) toast(`"${fresh.title}" ficou pronto. Está em Concluídos.`);
+  }
+  renderNav();
+  if (!isQueueScreen()) return;
+  const list = listFor(S.screen);
+  if (S.screen === 'feitos') {  // lista; o vídeo só abre quando você clica nele
+    if (S.openDone && !list.some((j) => j.id === S.openDone)) S.openDone = null;
+    S.sel = S.openDone;
+  } else if (!list.some((j) => j.id === S.sel)) { S.sel = list.length ? list[0].id : null; S.detail = null; withDetail = true; }
+  const job = S.sel ? S.queue.find((j) => j.id === S.sel) : null;
+  if (job && (withDetail || (S.detail && S.detail.job && S.detail.job.status !== job.status) || (job.status === 'pronto' && !S.detail?.video))) {
+    const d = await call('detalhes', job.id); if (!d.erro) S.detail = d;
+  }
+  renderQueueOnly();
+}
+let lastSig = '';
+function renderQueueOnly(force) {
+  if (!isQueueScreen()) return;
+  const sig = JSON.stringify([S.screen, S.queue, S.sel, S.openDone, S.qtab, S.busy, S.detail]);
+  if (!force && sig === lastSig && $('qdetail')) return;
+  lastSig = sig;
+  const scrollEl = document.querySelector('#qdetail'), top = scrollEl ? scrollEl.scrollTop : 0;
+  $('main').innerHTML = renderFila(); bindFila();
+  const el = document.querySelector('#qdetail'); if (el) el.scrollTop = top;
+}
+const pctText = (v) => `${Math.floor(v || 0)}%`;
+const pctBar = (v, h) => `<div style="display:flex;align-items:center;gap:12px"><div class="bar" style="flex-grow:1;height:${h}px"><div style="height:${h}px;width:${v || 0}%"></div></div><span style="font-weight:600;font-size:${h > 8 ? 15 : 13}px;min-width:42px;text-align:right">${pctText(v)}</span></div>`;
+const usd = (v) => v == null ? '—' : v > 0 && v < 0.01 ? '< US$ 0,01' : 'US$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const jobUsd = (j) => (j.usage && 'usd' in j.usage) ? usd(j.usage.usd) : '—';
+function renderFila() {
+  if (S.screen === 'feitos') return renderDone();
+  const items = listFor('fila');
+  if (!items.length) return `<div class="empty" style="height:100%"><span class="h" style="font-size:20px;color:var(--text);font-weight:600">A fila está vazia</span>
+    <span>Monte um vídeo em Produzir e ele aparece aqui. Os prontos ficam em Concluídos.</span><button class="primary" data-go2="prod">Novo vídeo</button></div>`;
+  const list = items.map((j) => {
+    const [label, color] = STATUS[j.status] || [j.status, 'var(--muted)'];
+    return `<button class="opt${S.sel === j.id ? ' on' : ''}" data-job="${j.id}" style="gap:8px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span class="tag" style="color:${color}"><span class="dotc" style="background:${color}"></span>${label}</span><span style="font-size:12px;color:var(--muted)">${when(j.created)}</span></div>
+      <span style="font-size:14px;font-weight:600;line-height:1.35">${esc(j.title)}</span><span style="font-size:12px;color:var(--muted)">${esc(j.channel)}</span>
+      ${j.status === 'produzindo' ? pctBar(j.progress.percent, 6) : `<div class="bar"><div style="width:${j.progress.percent}%"></div></div>`}</button>`;
+  }).join('');
+  const job = items.find((j) => j.id === S.sel) || items[0];
+  return `<div style="display:flex;height:100%">
+    <div class="scroll col" style="width:330px;flex-shrink:0;border-right:1px solid var(--edge);padding:22px 18px;gap:12px">
+      <span class="h" style="font-size:20px;font-weight:600;padding:0 4px 6px 4px">Fila de produção</span>${list}</div>
+    <div class="scroll col" id="qdetail" style="flex-grow:1;padding:26px 36px;gap:18px;min-width:0">${jobDetail(job)}</div></div>`;
+}
+function renderDone() {
+  const items = listFor('feitos').sort((a, b) => (b.finished || 0) - (a.finished || 0));
+  if (!items.length) return `<div class="empty" style="height:100%"><span class="h" style="font-size:20px;color:var(--text);font-weight:600">Nenhum vídeo concluído ainda</span>
+    <span>Quando um vídeo fica pronto, ele sai da fila e aparece aqui.</span><button class="primary" data-go2="prod">Novo vídeo</button></div>`;
+  const job = S.openDone && items.find((j) => j.id === S.openDone);
+  if (job) return `<div class="scroll col" id="qdetail" style="height:100%;padding:22px 36px 30px;gap:18px">${doneDetail(job)}</div>`;
+  const cols = 'grid-template-columns:minmax(0,3fr) minmax(0,1.3fr) minmax(0,1.2fr) 90px 110px 20px';
+  const rows = items.map((j) => {
+    const st = (S.data?.estilos || []).find((x) => x.id === j.style);
+    return `<button class="drow" data-done="${j.id}" style="${cols}">
+      <span class="col" style="gap:2px;min-width:0"><span style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(j.title)}</span><span class="sub" style="font-size:12px">estilo ${esc(st ? st.name : j.style)}</span></span>
+      <span style="color:var(--text2)">${esc(j.channel)}</span>
+      <span style="color:var(--muted)">${when(j.finished)}</span>
+      <span style="color:var(--muted)">${j.usage && j.usage.video_seconds ? fmtDur(j.usage.video_seconds) : '—'}</span>
+      <span style="font-weight:600;text-align:right">${jobUsd(j)}</span>
+      <span style="color:var(--muted);text-align:right">›</span></button>`;
+  }).join('');
+  return `<div class="scroll col" style="height:100%;padding:26px 36px;gap:18px">
+    <div class="col" style="gap:4px"><span class="h" style="font-size:22px;font-weight:600">Concluídos</span>
+      <span class="sub">Clique num vídeo para ver tudo dele: custo, arquivos, diagnóstico e descrição.</span></div>
+    <div class="card" style="padding:6px 0">
+      <div class="drow head" style="${cols}"><span>Vídeo</span><span>Canal</span><span>Concluído</span><span>Duração</span><span style="text-align:right">Custo</span><span></span></div>
+      ${rows}</div></div>`;
+}
+function doneDetail(j) {
+  const st = (S.data?.estilos || []).find((x) => x.id === j.style);
+  const d = S.detail && S.detail.job && S.detail.job.id === j.id ? S.detail : null;
+  const u = j.usage || {};
+  const tabs = [['custos', 'Custos'], ['arq', 'Arquivos'], ['diag', 'Diagnóstico'], ['tags', 'Tags e descrição']]
+    .map(([id, l]) => `<button class="tab${S.qtab === id ? ' on' : ''}" data-qtab="${id}">${l}</button>`).join('');
+  const body = ({diag: () => tabDiag(j, d), arq: () => tabArq(j, d), tags: () => tabTags(j, d)}[S.qtab] || (() => tabCustos(j)))();
+  return `<button class="ghost" data-back style="align-self:flex-start;padding:0 8px">← Concluídos</button>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap">
+      <div class="col" style="gap:8px;min-width:0;flex:1 1 420px"><span class="tag" style="align-self:flex-start;color:var(--ok);border-color:var(--okline)"><span class="dotc" style="background:var(--ok)"></span>Pronto</span>
+        <span class="h" style="font-size:26px;font-weight:600">${esc(j.title)}</span>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;padding-top:6px"><button class="primary" data-open="${esc(j.output)}">Abrir vídeo</button><button class="btn" data-remake="${j.id}">${ic('refresh', 16)}Produzir novamente</button><button class="btn" data-reveal="${esc(j.output)}">Mostrar na pasta</button><button class="btn" data-act="remove">Tirar da lista</button><button class="btn danger" data-act="delete">Excluir e liberar espaço</button></div></div>
+      <div class="card col" style="gap:0;min-width:300px;padding:8px 22px">${[['Canal', j.channel], ['Estilo', st ? st.name : j.style],
+        ['Duração', u.video_seconds ? fmtDur(u.video_seconds) : '—'], ['Concluído', when(j.finished)]]
+        .map(([k, v], i) => `<div style="display:flex;justify-content:space-between;gap:18px;padding:10px 0;${i ? 'border-top:1px solid var(--line2);' : ''}font-size:14px"><span style="color:var(--muted)">${k}</span><span style="font-weight:600;text-align:right">${esc(v)}</span></div>`).join('')}</div>
+    </div>
+    <div style="display:flex;gap:26px;border-bottom:1px solid var(--line2)">${tabs}</div>${body}`;
+}
+function tabCustos(j) {
+  const u = j.usage || {};
+  if (!('usd' in u)) return `<div class="card empty">Este vídeo foi feito antes da contagem de gastos.</div>`;
+  const steps = Object.entries(u.steps || {});
+  const fmt = (n) => (n || 0).toLocaleString('pt-BR');
+  const rows = steps.map(([name, s]) => `<div class="row"><div class="col" style="gap:2px"><span style="font-weight:600">${esc(name[0].toUpperCase() + name.slice(1))}</span><span class="sub">${s.seconds || s.detail
+      ? `${esc(s.model)} · ${(s.seconds || 0).toLocaleString('pt-BR')} s de vídeo gerado${s.detail ? ' · ' + esc(s.detail) : ''}`
+      : `${esc(s.model)} · ${s.calls} chamada(s) · ${fmt(s.input)} tokens de entrada · ${fmt(s.output)} de saída`}</span></div><span style="font-weight:600">${usd(s.usd)}</span></div>`).join('');
+  const banks = Object.entries(u.banks || {}).filter(([, n]) => n).map(([k, n]) => `<span class="tag">${esc({mixkit_local: 'Biblioteca local', pexels: 'Pexels', pixabay: 'Pixabay', wikimedia: 'Wikimedia'}[k] || k)} · ${n} buscas</span>`).join('');
+  return `<div class="grid3"><div class="card col" style="gap:6px"><span class="lbl">Custo</span><span class="h" style="font-size:30px;font-weight:600">${usd(u.usd)}</span><span class="sub">Estimativa deste vídeo (IA${u.services_usd ? ' + avatar' : ''}) · bancos de imagem grátis</span></div>
+      <div class="card col" style="gap:6px"><span class="lbl">Por minuto de vídeo</span><span class="h" style="font-size:30px;font-weight:600">${u.video_seconds ? usd(u.usd / (u.video_seconds / 60)) : '—'}</span><span class="sub">${u.video_seconds ? fmtDur(u.video_seconds) + ' de vídeo' : ''}</span></div>
+      <div class="card col" style="gap:6px"><span class="lbl">Chamadas à IA</span><span class="h" style="font-size:30px;font-weight:600">${u.calls || 0}</span><span class="sub">${u.calls ? 'plano de cenas, revisão e buscas' : 'plano de cenas reaproveitado do cache'}</span></div></div>
+    <div class="card col" style="gap:2px"><span class="lbl" style="padding-bottom:6px">Por etapa</span>${rows || '<span class="sub">Nenhuma chamada à IA neste vídeo.</span>'}</div>
+    ${banks ? `<div class="card col" style="gap:10px"><span class="lbl">Buscas nos bancos (grátis)</span><div style="display:flex;gap:8px;flex-wrap:wrap">${banks}</div></div>` : ''}
+    ${(u.unpriced || []).length ? `<div class="note warn">Sem preço na tabela para: ${esc(u.unpriced.join(', '))}. Ajuste em config.yaml (costs.prices).</div>` : ''}`;
+}
+function jobDetail(j) {
+  const [label, color] = STATUS[j.status] || [j.status, 'var(--muted)'];
+  const st = (S.data?.estilos || []).find((x) => x.id === j.style);
+  const tabs = [['acomp', 'Acompanhamento'], ['diag', 'Diagnóstico'], ['arq', 'Arquivos'], ['tags', 'Tags e descrição'],
+    ...(j.status === 'pronto' ? [['custos', 'Custos']] : [])]
+    .map(([id, l]) => `<button class="tab${S.qtab === id ? ' on' : ''}" data-qtab="${id}">${l}</button>`).join('');
+  const d = S.detail && S.detail.job && S.detail.job.id === j.id ? S.detail : null;
+  const body = ({acomp: () => tabAcomp(j), diag: () => tabDiag(j, d), arq: () => tabArq(j, d), tags: () => tabTags(j, d), custos: () => tabCustos(j)}[S.qtab] || (() => tabAcomp(j)))();
+  return `<div class="col" style="gap:8px"><span class="tag" style="align-self:flex-start;color:${color}"><span class="dotc" style="background:${color}"></span>${label}</span>
+      <span class="h" style="font-size:26px;font-weight:600">${esc(j.title)}</span>
+      <span class="sub">${esc(j.channel)} · pedido ${when(j.created)} · estilo ${esc(st ? st.name : j.style)}</span></div>
+    <div style="display:flex;gap:26px;border-bottom:1px solid var(--line2)">${tabs}</div>${body}`;
+}
+function tabAcomp(j) {
+  const p = j.progress;
+  const stages = p.stages.map((g, i) => {
+    let info = 'A seguir';
+    if (g.state === 'done') info = g.seconds != null ? `Feita · ${fmtDur(g.seconds)}` : 'Feita';
+    if (g.state === 'now') info = g.total ? `${g.done} de ${g.total}` : 'Em andamento';
+    if (j.status !== 'produzindo' && g.state === 'now') info = 'Parou aqui';
+    return `<div class="stage ${g.state}"><span class="dot">${g.state === 'done' ? '✓' : i + 1}</span><span style="font-size:14px;font-weight:600">${g.name}</span><span style="font-size:12px;color:var(--muted)">${info}</span></div>`;
+  }).join('');
+  const now = p.stages.find((g) => g.state === 'now');
+  const cards = [['Tempo de produção', p.elapsed ? fmtDur(p.elapsed) : '—'],
+    [j.status === 'pronto' ? 'Terminou' : 'Concluído', j.status === 'pronto' ? (j.finished ? when(j.finished) : '—') : pctText(p.percent)],
+    ['Nesta etapa', now ? (now.total ? `${now.done} / ${now.total} ${now.id === 'busca' ? 'cenas' : 'trechos'}` : now.name) : (j.status === 'pronto' ? 'Concluído' : '—')]];
+  const thumbs = (p.thumbs || []).slice(0, 12).map((t) => `<div class="thumb" style="background-image:url('${S.data.thumbs_url}${encodeURIComponent(t)}')"></div>`).join('');
+  let extra = '';
+  if (j.status === 'erro') extra = `<div class="note bad" style="align-items:flex-start;flex-direction:column;gap:6px"><span>O vídeo não saiu.</span><span style="font-weight:500">${esc(j.error)}</span></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="primary" data-act="retry">Tentar de novo</button><button class="btn" data-remake="${j.id}">Mudar estilo e ajustes</button><button class="btn" data-open="${esc(j.folder)}/log.txt">Abrir log</button><button class="btn danger" data-act="delete">Excluir</button></div>`;
+  if (j.status === 'cancelado') extra = `<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="primary" data-act="retry">Tentar de novo</button><button class="btn" data-remake="${j.id}">Mudar estilo e ajustes</button><button class="btn danger" data-act="delete">Excluir</button></div>`;
+  if (j.status === 'pronto') extra = `<div class="note ok">${ic('check', 18)}Vídeo pronto. Veja o diagnóstico antes de subir, e a aba Tags e descrição.</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="primary" data-open="${esc(j.output)}">Abrir vídeo</button><button class="btn" data-remake="${j.id}">Produzir novamente</button><button class="btn" data-reveal="${esc(j.output)}">Mostrar na pasta</button><button class="btn" data-act="remove">Tirar da lista</button><button class="btn danger" data-act="delete">Excluir e liberar espaço</button></div>`;
+  if (j.status === 'produzindo' || j.status === 'fila') extra = `<button class="btn danger" style="align-self:flex-start" data-act="cancel">${j.status === 'fila' ? 'Tirar da fila' : 'Cancelar produção'}</button>`;
+  return `<div class="col" style="gap:22px">
+    <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px">${stages}</div>
+    ${pctBar(p.percent, 10)}
+    <div class="grid3">${cards.map(([k, v]) => `<div class="card col" style="gap:6px"><span class="lbl">${k}</span><span class="h" style="font-size:24px;font-weight:600">${esc(v)}</span></div>`).join('')}</div>
+    ${thumbs ? `<div class="card col" style="gap:12px"><span class="lbl">Algumas imagens escolhidas</span><div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px">${thumbs}</div></div>` : ''}
+    ${extra}</div>`;
+}
+const waitDone = (j) => `<div class="card empty">${j.status === 'pronto' ? 'Carregando…' : 'Disponível quando o vídeo terminar.'}</div>`;
+function tabDiag(j, d) {
+  if (!d || !d.diag) return waitDone(j);
+  const colors = {ok: 'var(--ok)', aviso: 'var(--warn)', info: 'var(--muted)'};
+  const timings = Object.entries(d.timings || {}).map(([k, v]) => `<span class="tag">${esc(k)} · ${fmtDur(v)}</span>`).join('');
+  return `<div class="card col" style="gap:2px">${d.diag.map((x) => `<div class="row"><div style="display:flex;align-items:center;gap:12px"><span style="width:10px;height:10px;border-radius:5px;background:${colors[x.level]};flex-shrink:0"></span><span style="font-size:14px">${esc(x.text)}</span></div><span class="sub">${esc(x.when)}</span></div>`).join('') || '<span class="sub">Nada a apontar.</span>'}</div>
+    ${timings ? `<div class="card col" style="gap:12px"><span class="lbl">Tempo por etapa</span><div style="display:flex;gap:8px;flex-wrap:wrap">${timings}</div></div>` : ''}`;
+}
+function tabArq(j, d) {
+  if (!d || !d.video) return waitDone(j);
+  return `<div class="grid3">
+    <div class="card col" style="gap:10px"><span style="font-size:15px;font-weight:600">Vídeo final</span><span class="sub" style="word-break:break-all">${esc(d.video.name)} · ${esc(d.video.duration)} · 1080p</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-open="${esc(d.video.path)}">Abrir</button><button class="btn" data-reveal="${esc(d.video.path)}">Mostrar na pasta</button></div></div>
+    <div class="card col" style="gap:10px"><span style="font-size:15px;font-weight:600">Créditos das imagens</span><span class="sub">Lista pronta para colar na descrição ou no comentário fixado (a Wikimedia pede crédito).</span>
+      <button class="btn" style="align-self:flex-start" data-copy="credits" ${d.credits ? '' : 'disabled'}>${d.credits ? 'Copiar créditos' : 'Nenhum crédito necessário'}</button></div>
+    <div class="card col" style="gap:10px"><span style="font-size:15px;font-weight:600">Relatório e projeto</span><span class="sub">Todas as cenas, imagens escolhidas e tempos (o report.json, para mandar no chat); e a pasta com roteiro, ajustes e log.</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-open="${esc(d.report_path)}">Abrir relatório</button><button class="btn" data-reveal="${esc(d.report_path)}">Mostrar relatório na pasta</button><button class="btn" data-open="${esc(j.folder)}">Pasta do projeto</button></div></div></div>`;
+}
+function tabTags(j, d) {
+  if (!d || !d.video) return waitDone(j);
+  const caps = (d.chapters || []).map((c) => `${c.t} ${c.name}`).join('\n');
+  if (!d.seo) return `<div class="card col" style="gap:14px"><span class="h" style="font-size:16px;font-weight:600">Descrição, tags e títulos</span>
+      <span class="sub">A IA lê o roteiro e escreve no idioma do canal. Os capítulos já saem do vídeo, sem IA. Custa centavos.</span>
+      ${caps ? `<textarea class="input scroll" readonly style="height:180px;resize:none;font-size:13px;line-height:1.7">${esc(caps)}</textarea>` : '<span class="sub">Este roteiro não tem itens numerados, então não há capítulos.</span>'}
+      <div style="display:flex;gap:10px">${caps ? '<button class="btn" data-copy="chapters">Copiar capítulos</button>' : ''}<button class="primary" data-act="seo" ${S.busy ? 'disabled' : ''}>${S.busy ? 'A IA está escrevendo…' : 'Gerar com a IA'}</button></div></div>`;
+  const s = d.seo;
+  return `<div style="display:grid;grid-template-columns:3fr 2fr;gap:16px">
+    <div class="card col" style="gap:12px"><div style="display:flex;align-items:center;justify-content:space-between"><span class="lbl">Descrição com capítulos</span><button class="btn" data-copy="desc">Copiar</button></div>
+      <textarea class="input scroll" readonly style="height:320px;resize:none;line-height:1.7;font-size:13px">${esc(s.full)}</textarea></div>
+    <div class="card col" style="gap:12px"><div style="display:flex;align-items:center;justify-content:space-between"><span class="lbl">Tags</span><button class="btn" data-copy="tags">Copiar</button></div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">${s.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</div>
+      <span class="lbl" style="padding-top:8px">Sugestões de título</span>
+      ${s.titles.map((t, i) => `<button class="opt" data-copytitle="${i}" title="Clique para copiar" style="padding:10px 12px;font-size:14px">${esc(t)}</button>`).join('')}
+      <button class="ghost" data-act="seo" style="align-self:flex-start">Gerar de novo</button></div></div>`;
+}
+function bindFila() {
+  document.querySelectorAll('[data-go2]').forEach((b) => b.onclick = () => go(b.dataset.go2));
+  document.querySelectorAll('[data-job]').forEach((b) => b.onclick = async () => { S.sel = b.dataset.job; S.detail = null; renderQueueOnly(); await refreshQueue(true); });
+  document.querySelectorAll('[data-done]').forEach((b) => b.onclick = async () => { S.openDone = b.dataset.done; S.qtab = 'custos'; S.detail = null; renderQueueOnly(); await refreshQueue(true); });
+  document.querySelectorAll('[data-back]').forEach((b) => b.onclick = () => { S.openDone = null; S.detail = null; renderQueueOnly(); });
+  document.querySelectorAll('[data-remake]').forEach((b) => b.onclick = () => remake(b.dataset.remake));
+  document.querySelectorAll('[data-qtab]').forEach((b) => b.onclick = () => { S.qtab = b.dataset.qtab; renderQueueOnly(); });
+  document.querySelectorAll('[data-open]').forEach((b) => b.onclick = async () => { const r = await call('abrir', b.dataset.open); if (r && r.erro) toast(r.erro, true); });
+  document.querySelectorAll('[data-reveal]').forEach((b) => b.onclick = async () => { const r = await call('mostrar_na_pasta', b.dataset.reveal); if (r && r.erro) toast(r.erro, true); });
+  const act = (name, fn) => document.querySelectorAll(`[data-act="${name}"]`).forEach((b) => b.onclick = fn);
+  act('cancel', async () => { if (await confirmBox('Cancelar este vídeo?', 'O que já foi feito se perde. Você pode mandar produzir de novo depois.')) { await call('cancelar', S.sel); refreshQueue(true); } });
+  act('retry', async () => { await call('repetir', S.sel); S.detail = null; refreshQueue(true); });
+  act('delete', async () => {
+    if (!(await confirmBox('Excluir e liberar espaço?', 'Some da lista e apaga a pasta do projeto (roteiro, ajustes e log), as imagens e vídeos que o bot baixou para ele e os arquivos temporários. O vídeo pronto (pasta videos), seu áudio, o avatar e as imagens do personagem continuam.'))) return;
+    const r = await call('excluir', S.sel);
+    if (r && r.erro) { toast(r.erro, true); return; }
+    toast(`Excluído. Liberou ${r.liberado}.`);
+    S.sel = null; S.openDone = null; S.detail = null; refreshQueue(true);
+  });
+  act('remove', async () => { await call('remover', S.sel); S.sel = null; S.openDone = null; S.detail = null; refreshQueue(true); });
+  act('seo', async () => {
+    S.busy = true; renderQueueOnly();
+    const r = await call('gerar_seo', S.sel); S.busy = false;
+    if (r.erro) toast(r.erro, true); else { S.detail.seo = r; refreshQueue(true); }
+    renderQueueOnly();
+  });
+  document.querySelectorAll('[data-copy]').forEach((b) => b.onclick = () => {
+    const d = S.detail, k = b.dataset.copy;
+    const text = k === 'credits' ? d.credits : k === 'tags' ? d.seo.tags.join(', ') : k === 'desc' ? d.seo.full : (d.chapters || []).map((c) => `${c.t} ${c.name}`).join('\n');
+    copy(text);
+  });
+  document.querySelectorAll('[data-copytitle]').forEach((b) => b.onclick = () => copy(S.detail.seo.titles[+b.dataset.copytitle]));
+}
+async function copy(text) {
+  let ok = await call('copiar', text);
+  if (!ok) { try { await navigator.clipboard.writeText(text); ok = true; } catch (e) { ok = false; } }
+  toast(ok ? 'Copiado.' : 'Não consegui copiar.', !ok);
+}
+
+// ---------------------------------------------------------------- CANAIS
+function renderCanais() {
+  const n = S.newCh, d = S.data;
+  const cards = d.canais.map((c) => `<div class="card col" style="gap:14px">
+      <div class="col" style="gap:2px"><span class="h" style="font-size:18px;font-weight:600">${esc(c.name)}</span><span class="sub">${esc(c.language_name)} · ${esc(c.currency || 'moeda da fala')} · ${esc(c.niche_name)}</span></div>
+      <div style="display:flex;gap:8px">${c.colors.map((k) => `<span style="width:22px;height:22px;border-radius:11px;background:${k};border:1px solid var(--line3)"></span>`).join('')}</div>
+      <span class="sub">${c.blocked.length ? 'Não usa: ' + esc(c.blocked.join(', ')) + '.' : 'Sem restrições de estilo.'} Vídeos em ${esc(c.videos_dir)}. ${Object.keys(c.presets || {}).length} preset(s).</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" data-editch="${esc(c.file)}">Editar</button><button class="btn" data-open="${esc(c.videos_dir)}">Pasta dos vídeos</button><button class="btn" data-open="canais/${esc(c.file)}.yaml">Abrir arquivo</button></div></div>`).join('');
+  const opts = (obj, cur) => Object.entries(obj).map(([k, v]) => `<option value="${esc(k)}" ${k === cur ? 'selected' : ''}>${esc(v)}</option>`).join('');
+  const pals = {grafite: ['#17151F', '#8B5CF6'], marinho: ['#050C22', '#FFCC00'], cinza: ['#18191C', '#D62424'], preto: ['#0B0B0B', '#22C55E']};
+  return `<div class="scroll col" style="height:100%;padding:26px 36px;gap:22px">
+    <div class="col" style="gap:4px"><span class="h" style="font-size:22px;font-weight:600">Canais</span><span class="sub">Cada canal guarda a identidade: idioma, moeda, assunto e cores. O estilo de cada vídeo você escolhe na hora.</span></div>
+    <div class="grid2">${cards}</div>
+    <section class="card col" id="chForm" style="gap:18px${S.editCh ? ';border-color:var(--tintline)' : ''}"><span class="h" style="font-size:18px;font-weight:600">${S.editCh ? 'Editar ' + esc(S.editName) : 'Novo canal'}</span>
+      <div class="grid2">
+        <label class="col" style="gap:8px;font-size:13px;color:var(--muted)">Nome do canal<input class="input" id="chName" value="${esc(n.name)}" placeholder="Ex.: Top 10 Mundo"></label>
+        <label class="col" style="gap:8px;font-size:13px;color:var(--muted)">Idioma<select class="input" id="chLang">${opts(d.idiomas, n.language)}</select></label>
+        <label class="col" style="gap:8px;font-size:13px;color:var(--muted)">Moeda<select class="input" id="chCur">${d.moedas.map((m) => `<option ${m === n.currency ? 'selected' : ''}>${esc(m)}</option>`).join('')}</select></label>
+        <div class="col" style="gap:8px;font-size:13px;color:var(--muted)">Assunto do canal<div class="seg">${Object.entries(d.nichos).map(([k, v]) => `<button class="segb${n.niche === k ? ' on' : ''}" data-niche="${k}">${esc(v)}</button>`).join('')}</div></div>
+      </div>
+      ${n.niche === 'variado' ? '<div class="note info">Variado: o bot não procura "cara de carro" nas imagens e não usa o card de consumo. As pastas de imagens por item chegam na próxima atualização.</div>' : ''}
+      <div class="col" style="gap:10px"><span style="font-size:13px;color:var(--muted)">Cores do canal</span>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">${Object.entries(d.paletas).map(([k, v]) => `<button class="opt${n.palette === k ? ' on' : ''}" data-pal="${k}" style="flex-direction:row;align-items:center;gap:10px;padding:10px 14px">
+          <span style="width:22px;height:22px;border-radius:6px;background:${pals[k][0]};border:1px solid var(--line3)"></span><span style="width:22px;height:22px;border-radius:6px;background:${pals[k][1]}"></span><span style="font-size:13px;font-weight:600">${esc(v)}</span></button>`).join('')}
+          ${S.editCh && n.palette === 'personalizada' ? `<button class="opt on" data-pal="personalizada" style="flex-direction:row;align-items:center;gap:10px;padding:10px 14px"><span style="font-size:13px;font-weight:600">Cores atuais (personalizadas)</span></button>` : ''}</div></div>
+      <div class="row" style="padding:4px 0"><div class="col" style="gap:2px"><span style="font-weight:600">Visual de papel</span><span class="sub">Dossiê em papel e a ficha com fita adesiva. Desligado, eles não aparecem no Mix nem nos outros estilos; se você escolher o estilo Dossiê num vídeo, eles entram.</span></div>
+        <button class="sw${n.paper ? ' on' : ''}" id="chPaper" aria-label="Visual de papel"><span class="knob"></span></button></div>
+      ${S.editCh ? avatarBox(n) : ''}
+      ${S.editCh ? `<span class="sub">O nome novo vale para os próximos vídeos e aparece também nos vídeos já feitos. Se a pasta dos vídeos for a padrão, ela muda de nome junto.</span>` : ''}
+      <div style="display:flex;justify-content:flex-end;gap:10px">${S.editCh ? '<button class="ghost" id="chCancel">Cancelar</button><button class="primary" id="chSave">Salvar alterações</button>' : '<button class="primary" id="chCreate">Criar canal</button>'}</div>
+    </section></div>`;
+}
+function avatarBox(n) {
+  const a = n.avatar, list = S.avList;
+  const segAv = (key, defs) => `<div class="seg">${defs.map(([id, label]) => `<button class="segb${a[key] === id ? ' on' : ''}" data-av="${key}" data-val="${id}">${label}</button>`).join('')}</div>`;
+  const q = (S.avFilter || '').toLowerCase();
+  const shown = (list || []).filter((x) => !q || (x.name || '').toLowerCase().includes(q) || x.id.toLowerCase().includes(q)).slice(0, 60);
+  const grid = list ? `<div style="display:flex;gap:10px;align-items:center"><input class="input" id="avFilter" placeholder="Procurar pelo nome" value="${esc(S.avFilter || '')}" style="flex:1"><span class="sub">${list.length} na sua conta</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;max-height:340px;overflow:auto">${shown.map((x) => `<button class="opt${a.id === x.id ? ' on' : ''}" data-avpick="${esc(x.id)}" style="padding:6px;gap:4px">
+        ${x.preview ? `<img src="${esc(x.preview)}" alt="" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--line)">` : ''}
+        <span style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.name || x.id)}</span><span class="sub" style="font-size:11px">${x.kind === 'photo' ? 'Foto falante' : 'Avatar'}</span></button>`).join('')}</div>` : '';
+  const pname = (a.photo || '').split('/').pop();
+  const thumb = a.photo && /\.(jpe?g|png|webp)$/i.test(pname)
+    ? `<img src="/personagem/${encodeURIComponent(pname)}?v=${S.avStamp || 0}" alt="" style="width:192px;height:108px;border-radius:12px;object-fit:cover;border:1px solid var(--line3)">`
+    : '<span style="width:192px;height:108px;border-radius:12px;border:1px dashed var(--line3);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)">sem imagem</span>';
+  return `<div class="col" style="gap:12px"><div class="col" style="gap:2px"><span style="font-weight:600">Avatar apresentador (HeyGen)</span>
+      <span class="sub">A HeyGen anima a imagem do personagem e faz o lip-sync com a sua narração, na abertura, na chamada para se inscrever e no final. Cada canal tem o seu. Precisa da chave da HeyGen em Configurações.</span></div>
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">${thumb}
+      <div class="col" style="gap:6px;flex:1;min-width:220px"><span style="font-weight:600;font-size:13px">Imagem do personagem</span>
+        <span class="sub">${a.photo ? esc(pname) : 'A imagem pronta, já com o cenário (ex.: o mecânico dentro da oficina). Rosto de frente e bem visível.'}</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="avPhoto">${a.photo ? 'Trocar imagem' : 'Escolher imagem'}</button>${a.photo ? '<button class="ghost" id="avPhotoOff">Tirar imagem</button>' : ''}</div></div></div>
+    <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center">
+      <div class="col" style="gap:6px"><span class="sub">Na tela</span>${segAv('layout', [['full', 'Tela cheia'], ['corner', 'No canto']])}</div>
+      ${a.photo || a.kind === 'photo' ? `<div class="col" style="gap:6px"><span class="sub">Movimento</span>${segAv('engine', [['avatar_iv', 'Avatar IV (cabeça, corpo e mãos)'], ['standard', 'Padrão (boca e cabeça)']])}</div>` : ''}
+      ${a.layout === 'corner' ? `<div class="col" style="gap:6px"><span class="sub">Canto</span>${segAv('position', [['right', 'Direita'], ['left', 'Esquerda']])}</div>` : ''}</div>
+    ${a.photo && a.id ? `<span class="sub" style="color:var(--ok)">Usando o ID ${esc(a.name || a.id)} da HeyGen: o bot não envia a imagem de novo (a imagem continua nas fotos do personagem).</span>` : ''}
+    <details ${a.id ? 'open' : ''}><summary class="sub" style="cursor:pointer">ID do avatar na HeyGen (crie uma vez em app.heygen.com e escolha aqui: o bot nunca mais envia a imagem)</summary>
+      <div class="col" style="gap:10px;margin-top:10px">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        ${a.preview ? `<img src="${esc(a.preview)}" alt="" style="width:56px;height:56px;border-radius:12px;object-fit:cover;border:1px solid var(--line3)">` : ''}
+        <input class="input" id="avId" value="${esc(a.id)}" placeholder="ID do avatar (ou escolha da sua conta)" style="flex:1;min-width:220px">
+        <button class="btn" id="avLoad">${list ? 'Atualizar lista' : 'Escolher da minha conta'}</button>
+        ${a.id ? '<button class="ghost" id="avClear">Tirar avatar</button>' : ''}</div>
+      <div class="col" style="gap:6px;align-items:flex-start"><span class="sub">Tipo</span>${segAv('kind', [['avatar', 'Avatar'], ['photo', 'Foto falante']])}</div>
+      ${grid}</div></details></div>`;
+}
+function bindAvatar(n) {
+  const a = n.avatar;
+  if (!$('avId')) return;
+  $('avId').oninput = (e) => { a.id = e.target.value.trim(); a.name = ''; a.preview = ''; };
+  document.querySelectorAll('[data-av]').forEach((b) => b.onclick = () => { a[b.dataset.av] = b.dataset.val; render(); });
+  if ($('avPhoto')) $('avPhoto').onclick = async () => {
+    const r = await call('escolher_imagem_avatar', S.editCh || n.name || 'canal');
+    if (r && r.erro) return toast(r.erro, true);
+    if (r && r.photo) { a.photo = r.photo; S.avStamp = Date.now(); toast('Imagem escolhida. Salve as alterações do canal.'); render(); }
+  };
+  if ($('avPhotoOff')) $('avPhotoOff').onclick = () => { a.photo = ''; render(); };
+  if ($('avClear')) $('avClear').onclick = () => { Object.assign(a, {id: '', kind: 'avatar', name: '', preview: ''}); render(); };
+  $('avLoad').onclick = async () => {
+    $('avLoad').disabled = true; $('avLoad').textContent = 'Buscando...';
+    const r = await call('avatares');
+    if (r && r.erro) { toast(r.erro, true); render(); return; }
+    S.avList = r || []; if (!S.avList.length) toast('Nenhum avatar na sua conta HeyGen.', true); render();
+  };
+  if ($('avFilter')) $('avFilter').oninput = (e) => { S.avFilter = e.target.value; const pos = e.target.selectionStart; render(); const f = $('avFilter'); if (f) { f.focus(); f.setSelectionRange(pos, pos); } };
+  document.querySelectorAll('[data-avpick]').forEach((b) => b.onclick = () => {
+    const x = (S.avList || []).find((y) => y.id === b.dataset.avpick); if (!x) return;
+    Object.assign(a, {id: x.id, kind: x.kind, name: x.name || '', preview: x.preview || ''}); render();
+  });
+}
+function bindCanais() {
+  const n = S.newCh;
+  $('chName').oninput = (e) => n.name = e.target.value;
+  $('chLang').onchange = (e) => { n.language = e.target.value; n.currency = {en: '£', fr: '€', pt: 'R$', pl: 'zł', es: '€'}[n.language] || n.currency; render(); };
+  $('chCur').onchange = (e) => n.currency = e.target.value;
+  document.querySelectorAll('[data-niche]').forEach((b) => b.onclick = () => { n.niche = b.dataset.niche; render(); });
+  document.querySelectorAll('[data-pal]').forEach((b) => b.onclick = () => { n.palette = b.dataset.pal; render(); });
+  document.querySelectorAll('[data-open]').forEach((b) => b.onclick = async () => { const r = await call('abrir', b.dataset.open); if (r && r.erro) toast(r.erro, true); });
+  $('chPaper').onclick = () => { n.paper = !n.paper; render(); };
+  bindAvatar(n);
+  document.querySelectorAll('[data-editch]').forEach((b) => b.onclick = () => {
+    const c = S.data.canais.find((x) => x.file === b.dataset.editch); if (!c) return;
+    S.editCh = c.file; S.editName = c.name;
+    S.newCh = {name: c.name, language: c.language || 'en', currency: c.currency || '£', niche: c.niche || 'automotivo',
+               palette: c.palette || 'personalizada', paper: c.paper, avatar: {...(c.avatar || {id: '', kind: 'avatar', layout: 'full', photo: '', engine: 'avatar_iv', position: 'right', name: '', preview: ''})}};
+    render(); const f = $('chForm'); if (f) f.scrollIntoView({behavior: 'smooth', block: 'start'});
+  });
+  const reset = () => { S.editCh = null; S.editName = ''; S.newCh = {name: '', language: 'en', currency: '£', niche: 'automotivo', palette: 'grafite', paper: true, avatar: {id: '', kind: 'avatar', layout: 'full', photo: '', engine: 'avatar_iv', position: 'right', name: '', preview: ''}}; S.avList = null; };
+  if ($('chCancel')) $('chCancel').onclick = () => { reset(); render(); };
+  if ($('chSave')) $('chSave').onclick = async () => {
+    const r = await call('editar_canal', S.editCh, n);
+    if (r.erro) return toast(r.erro, true);
+    S.data.canais = await call('canais'); await refreshQueue();
+    reset(); toast(`Canal ${r.name} salvo.`); render();
+  };
+  if ($('chCreate')) $('chCreate').onclick = async () => {
+    const r = await call('criar_canal', n);
+    if (r.erro) return toast(r.erro, true);
+    S.data.canais = await call('canais');
+    reset(); toast(`Canal ${r.name} criado.`); render();
+  };
+}
+
+// ---------------------------------------------------------------- BIBLIOTECA
+function renderBib() {
+  return `<div class="scroll col" style="height:100%;padding:26px 36px;gap:22px">
+    <div class="col" style="gap:4px"><span class="h" style="font-size:22px;font-weight:600">Biblioteca</span><span class="sub">Suas fotos e vídeos, por item. O bot vai usar estas primeiro (ou só estas, se você escolher).</span></div>
+    <div class="card col" style="gap:14px"><span class="tag acc" style="align-self:flex-start">Próxima atualização</span>
+      <span class="h" style="font-size:18px;font-weight:600">Pastas por item, criadas a partir do roteiro</span>
+      <span class="sub">O app vai ler o roteiro, criar uma pasta para cada item (#10, #9…) e avisar quando faltar foto. Você escolhe: só as suas imagens, as suas primeiro, ou só os bancos; e se os bancos podem entrar nas partes genéricas. As pastas podem ficar só no vídeo ou na biblioteca do canal.</span>
+      <span class="sub">Hoje o bot já usa a biblioteca local em <b>library/mixkit</b> (vídeos com o nome descrevendo a cena).</span>
+      <button class="btn" style="align-self:flex-start" data-open="library/mixkit">Abrir library/mixkit</button></div></div>`;
+}
+
+// ---------------------------------------------------------------- CONFIGURAÇÕES
+async function loadKeys() {
+  const [k, m, c] = await Promise.all([call('chaves'), S.machine ? S.machine : call('maquina'), call('custos')]);
+  S.keys = k; S.machine = m; if (!c.erro) S.costs = c; if (S.screen === 'cfg') render();
+}
+function renderCfg() {
+  const prefs = S.data.prefs || {}, ia = prefs.ia || '';
+  const keys = (S.keys || []).map((k) => `<div class="row">
+      <div class="col" style="gap:2px;width:230px;flex-shrink:0"><span style="font-weight:600">${esc(k.name)}</span><span class="sub">${esc(k.use)}</span></div>
+      <input class="input" data-key="${k.env}" type="${k.plain ? 'text' : 'password'}" placeholder="${k.filled ? esc(k.shown) : 'Cole aqui'}" style="flex-grow:1;width:auto">
+      <span class="tag" id="st_${k.env}" style="color:${k.filled ? 'var(--muted)' : 'var(--warn)'};border-color:${k.filled ? 'var(--line)' : 'var(--warnline)'}">${k.filled ? 'Preenchida' : 'Falta preencher'}</span>
+      <button class="btn" data-save="${k.env}">Salvar</button><button class="btn" data-test="${k.env}" ${k.filled ? '' : 'disabled'}>Testar</button></div>`).join('');
+  const m = S.machine;
+  const iaSeg = [['', `Padrão do config.yaml${m ? ' (' + (m.ia_config === 'openai' ? 'ChatGPT' : m.ia_config === 'anthropic' ? 'Claude' : m.ia_config) + ')' : ''}`], ['anthropic', 'Claude'], ['openai', 'ChatGPT']]
+    .map(([id, l]) => `<button class="segb${ia === id ? ' on' : ''}" data-ia="${id}">${esc(l)}</button>`).join('');
+  return `<div class="scroll col" style="height:100%;padding:26px 36px;gap:22px">
+    <div class="col" style="gap:4px"><span class="h" style="font-size:22px;font-weight:600">Configurações</span><span class="sub">As chaves ficam só neste computador (no arquivo .env). Cada pessoa usa as suas.</span></div>
+    <section class="card col" style="gap:4px"><span class="lbl" style="padding-bottom:6px">Chaves de API</span>${keys || '<span class="sub">Carregando…</span>'}</section>
+    <section class="card col" style="gap:4px"><span class="lbl" style="padding-bottom:6px">Inteligência artificial</span>
+      <div class="row"><div class="col" style="gap:2px"><span style="font-weight:600">IA do plano de cenas, revisão e descrição</span><span class="sub">Precisa da chave da IA escolhida.</span></div><div class="seg">${iaSeg}</div></div>
+      <div class="row"><div class="col" style="gap:2px"><span style="font-weight:600">Diretor de IA</span><span class="sub">Antes de tudo, uma IA mais forte lê o roteiro inteiro e decide ranking, listas, cards e o nicho do vídeo; o bot confere cada número e nome no roteiro. Custa centavos por vídeo. Desligado, valem só as regras do bot.</span></div>
+        <button class="sw${prefs.diretor !== false ? ' on' : ''}" data-diretor aria-label="Diretor de IA"><span class="knob"></span></button></div></section>
+    <section class="card col" style="gap:14px"><span class="lbl">Aparência do app</span>
+      <span class="sub">Só muda as cores desta janela. As cores dos vídeos são as de cada canal.</span>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">${Object.entries(THEMES).map(([id, t]) => `<button class="opt${((THEMES[prefs.tema] ? prefs.tema : DEFAULT_THEME)) === id ? ' on' : ''}" data-tema="${id}" style="flex-direction:row;align-items:center;gap:10px;padding:9px 14px 9px 9px">
+        <span style="position:relative;width:34px;height:24px;border-radius:5px;background:${t.bg};border:1px solid ${t.line};overflow:hidden"><span style="position:absolute;right:4px;bottom:4px;width:12px;height:6px;border-radius:2px;background:${t.acc}"></span></span><span style="font-size:13px;font-weight:500">${t.name}</span></button>`).join('')}</div>
+      <div class="row"><div class="col" style="gap:2px"><span style="font-weight:600">Som ao passar o mouse</span><span class="sub">Um clique suave nos botões e cartões.</span></div>
+        <button class="sw${UI.sound ? ' on' : ''}" data-ui="sound" aria-label="Som ao passar o mouse"><span class="knob"></span></button></div>
+    </section>
+    ${costsSection()}
+    <section class="card col" style="gap:4px"><span class="lbl" style="padding-bottom:6px">Este computador</span>
+      ${m ? [['Codificação de vídeo', m.encoder], ['Transcrição', m.transcription], ['Sistema', m.system], ['Pasta dos vídeos', m.videos]].map(([k, v]) => `<div class="row"><span>${k}</span><span style="font-weight:600;text-align:right">${esc(v)}</span></div>`).join('') : '<span class="sub">Verificando…</span>'}
+    </section></div>`;
+}
+function costsSection() {
+  const c = S.costs;
+  if (!c) return '';
+  const rows = [['Vídeos prontos', String(c.videos)], ['Minutos de vídeo', String(c.minutes).replace('.', ',')],
+    ['Gasto com IA este mês', usd(c.usd_month)], ['Gasto com IA no total', usd(c.usd)]];
+  const by = Object.entries(c.by_channel || {}).map(([k, v]) => `${esc(k)} ${usd(v)}`).join(' · ');
+  return `<section class="card col" style="gap:4px"><span class="lbl" style="padding-bottom:6px">Gastos com IA</span>
+    ${rows.map(([k, v]) => `<div class="row"><span>${k}</span><span style="font-weight:600">${esc(v)}</span></div>`).join('')}
+    <span class="sub" style="padding-top:8px">${by ? 'Por canal: ' + by + '. ' : ''}Estimativa pelos tokens e a tabela de preços; o valor oficial está no painel da OpenAI/Anthropic.${c.counted < c.videos ? ` ${c.videos - c.counted} vídeo(s) feitos antes da contagem não entram.` : ''}</span></section>`;
+}
+function bindCfg() {
+  document.querySelectorAll('[data-save]').forEach((b) => b.onclick = async () => {
+    const env = b.dataset.save, input = document.querySelector(`[data-key="${env}"]`);
+    if (!input.value.trim()) return toast('Cole a chave antes de salvar.', true);
+    const r = await call('salvar_chave', env, input.value.trim());
+    if (r.erro) return toast(r.erro, true);
+    S.keys = r; S.data = await call('inicio'); toast('Chave salva.'); render();
+  });
+  document.querySelectorAll('[data-test]').forEach((b) => b.onclick = async () => {
+    const tag = $('st_' + b.dataset.test); tag.textContent = 'Testando…';
+    const r = await call('testar_chave', b.dataset.test);
+    tag.textContent = r.msg; tag.style.color = r.ok ? 'var(--ok)' : 'var(--bad)'; tag.style.borderColor = r.ok ? 'var(--okline)' : 'var(--badline)';
+  });
+  document.querySelectorAll('[data-tema]').forEach((b) => b.onclick = async () => {
+    applyTheme(b.dataset.tema);
+    const r = await call('salvar_preferencia', 'tema', b.dataset.tema);
+    if (r.erro) return toast(r.erro, true);
+    S.data.prefs = r; render();
+  });
+  document.querySelectorAll('[data-ui]').forEach((b) => b.onclick = async () => {
+    const k = b.dataset.ui;
+    UI[k] = !UI[k];
+    if (k === 'sound' && UI.sound) { audio(); setTimeout(() => tick(0.06), 60); }
+    render();
+    const r = await call('salvar_preferencia', 'som', UI[k]);
+    if (r && r.erro) toast(r.erro, true); else S.data.prefs = r;
+  });
+  document.querySelectorAll('[data-diretor]').forEach((b) => b.onclick = async () => {
+    const on = (S.data.prefs || {}).diretor === false;
+    const r = await call('salvar_preferencia', 'diretor', on);
+    if (r.erro) return toast(r.erro, true);
+    S.data.prefs = r; render();
+  });
+  document.querySelectorAll('[data-ia]').forEach((b) => b.onclick = async () => {
+    const r = await call('salvar_preferencia', 'ia', b.dataset.ia);
+    if (r.erro) return toast(r.erro, true);
+    S.data.prefs = r; render();
+  });
+}
+
+// ---------------------------------------------------------------- modal
+function modal(html) { $('layer').innerHTML = `<div class="modal"><div class="card">${html}</div></div>`; const c = $('mcancel'); if (c) c.onclick = closeModal; }
+function closeModal() { $('layer').querySelector('.modal')?.remove(); }
+function confirmBox(title, text) {
+  return new Promise((ok) => {
+    modal(`<span class="h" style="font-size:18px;font-weight:600">${esc(title)}</span><span class="sub">${esc(text)}</span>
+      <div style="display:flex;justify-content:flex-end;gap:10px"><button class="ghost" id="mcancel">Voltar</button><button class="primary" id="mok">Confirmar</button></div>`);
+    $('mcancel').onclick = () => { closeModal(); ok(false); };
+    $('mok').onclick = () => { closeModal(); ok(true); };
+  });
+}
+
+// ---------------------------------------------------------------- render geral
+function render() {
+  if (!S.data) return;
+  const active = document.activeElement, id = active && active.id, pos = active && active.selectionStart;
+  const screens = {prod: [renderProd, bindProd], fila: [renderFila, bindFila], feitos: [renderFila, bindFila], canais: [renderCanais, bindCanais], bib: [renderBib, () => {
+    document.querySelectorAll('[data-open]').forEach((b) => b.onclick = async () => { const r = await call('abrir', b.dataset.open); if (r && r.erro) toast(r.erro, true); });
+  }], cfg: [renderCfg, bindCfg]};
+  const [html, bind] = screens[S.screen];
+  const keep = ['pane', 'script', 'qdetail'].map((k) => [k, $(k) ? $(k).scrollTop : 0]);
+  $('main').innerHTML = html(); bind(); playPreviews();
+  keep.forEach(([k, top]) => { if ($(k)) $(k).scrollTop = top; });
+  if (id && $(id) && ['script', 'title', 'chName'].includes(id)) { $(id).focus(); try { $(id).setSelectionRange(pos, pos); } catch (e) {} }
+}
+
+async function boot() {
+  await ready();
+  S.data = await call('inicio');
+  if (S.data.erro) { $('main').innerHTML = `<div class="empty"><span>Não consegui iniciar: ${esc(S.data.erro)}</span></div>`; return; }
+  S.queue = S.data.fila || [];
+  if (S.data.prefs && S.data.prefs.tema) applyTheme(S.data.prefs.tema);
+  if (S.data.prefs) UI.sound = S.data.prefs.som !== false;
+  if (S.data.canais.length) S.form.channel = S.data.canais[0].file;
+  renderNav(); render();
+  call('maquina').then((m) => { S.machine = m; $('pc').textContent = `Vídeo: ${m.encoder}`; if (S.screen === 'cfg') render(); });
+  setInterval(() => refreshQueue(false), 2500);
+}
+boot();
+</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+.env
+.cache/
+.work/
+__pycache__/
+*.pyc
+.pytest_cache/
+video_final.mp4
+report.json
+library/**/*
+!library/**/
+!library/**/.gitkeep
+
+# revisão visual pelo chat (grades e resposta)
+revisao/
+
+# vídeos gerados (uma pasta por canal)
+videos/**/*
+!videos/**/
+!videos/**/.gitkeep
+
+# nKiev Studio: fila, projetos (roteiro, ajustes, log e relatório de cada vídeo) e preferências
+projetos/
+
+# imagens do personagem de cada canal (geradas pela OpenAI, reaproveitadas nos próximos vídeos)
+canais/personagem/
+
+# arquivos de trabalho soltos na raiz (modo antigo pelo chat e referências)
+/roteiro.txt
+/narracao.mp3
+/cenas.json
+/prompt_cenas.txt
+/ref.mp4
+/frames.zip
+
+# ajustes pessoais (por cima do config.yaml; o git pull não mexe)
+config.local.yaml
+config.yaml.antigo

@@ -1,0 +1,27 @@
+# Canal Jhonny Walt — inglês (público Reino Unido)
+# O bot usa este perfil sozinho quando o roteiro é em inglês (ou com --canal "Jhonny Walt").
+# Só o que está aqui muda; o resto vem do config.yaml.
+
+canal:
+  nome: Jhonny Walt
+  idioma: en
+  moeda: "£"                       # preços em libra quando a fala não diz a moeda
+  pasta_videos: videos/Jhonny Walt
+  sem_templates: [dossier]         # sem o dossiê em papel
+  sem_overlays: [file]             # sem a ficha de papel com fita adesiva
+  # identidade: cinza-escuro com detalhes vermelhos; a "prancheta" (foto do carro, galeria,
+  # mão desenhando) continua azul-escura. Cores em [R, G, B].
+  paleta:
+    fundo: [24, 25, 28]            # fundo dos templates (cinza-escuro)
+    grade: [58, 62, 70]            # linhas da grade sobre o fundo
+    blueprint: [8, 20, 52]         # fundo da prancheta (azul-escuro)
+    grade_blueprint: [40, 82, 185] # linhas da prancheta
+    texto: [240, 240, 240]         # texto principal (com contorno preto)
+    destaque: [214, 36, 36]        # filetes, números, marca-texto, setas, barras (vermelho)
+    contorno: [0, 0, 0]
+    creme: [236, 232, 224]         # texto das legendas/palavra de impacto
+    veu: [18, 18, 20]              # véu escuro dos overlays sobre o b-roll
+
+# Qualquer seção do config.yaml pode ser ajustada só para este canal, por exemplo:
+# templates:
+#   rhythm_gap: 11

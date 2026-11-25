@@ -1,0 +1,19 @@
+# Example English channel (cars). Edit it in nKiev Studio (Channels screen) or by hand (see canais/LEIA-ME.md).
+canal:
+  nome: My Channel
+  idioma: en
+  moeda: $
+  pasta_videos: videos/My Channel
+  sem_templates: []
+  sem_overlays: []
+  paleta:
+    fundo: [24, 25, 28]
+    grade: [58, 62, 70]
+    blueprint: [8, 20, 52]
+    grade_blueprint: [40, 82, 185]
+    texto: [240, 240, 240]
+    destaque: [214, 36, 36]
+    contorno: [0, 0, 0]
+    creme: [236, 232, 224]
+    veu: [18, 18, 20]
+  nicho: automotivo

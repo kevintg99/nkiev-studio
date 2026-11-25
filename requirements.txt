@@ -1,0 +1,28 @@
+# Núcleo
+requests>=2.31
+PyYAML>=6.0
+python-dotenv>=1.0
+numpy>=1.26
+pillow>=10.0
+pydantic>=2.6
+
+# Análise de cenas e revisão visual: Claude (recomendado) ou ChatGPT
+anthropic>=1.9
+openai>=1.60
+
+# Transcrição com timestamps por palavra (recomendado)
+faster-whisper>=1.2         # 1.1 + PyAV novo quebrava ("metadata_errors"); o bot decodifica pelo ffmpeg de todo jeito
+
+# Ranking visual imagem-texto (recomendado; puxa o PyTorch)
+open_clip_torch>=2.24
+torch>=2.2
+
+# Vídeos Creative Commons do YouTube (só o trecho usado é baixado; precisa do ffmpeg, que o bot já usa)
+yt-dlp>=2025.11.12
+yt-dlp-ejs                  # scripts que o yt-dlp roda no Deno para o YouTube (o Deno o instalar_app.bat instala)
+
+# App nKiev Studio (janela própria; sem ele o app abre no navegador)
+pywebview>=5.0
+
+# Testes
+pytest>=8.0
